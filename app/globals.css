@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ink text-white font-body antialiased;
+  background-image:
+    radial-gradient(1200px 600px at 80% -10%, rgba(212, 175, 55, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 10% 110%, rgba(212, 175, 55, 0.05), transparent 60%);
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl;
+  }
+  .glass-gold {
+    @apply glass border-gold/25 shadow-glow;
+  }
+  .gold-text {
+    @apply bg-gold-text bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer;
+  }
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-l from-gold-soft via-gold to-gold-dim text-ink font-semibold px-7 py-3 transition-all duration-300 hover:shadow-glow hover:scale-[1.03] active:scale-[0.98];
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-gold/40 text-gold px-7 py-3 transition-all duration-300 hover:bg-gold/10 hover:shadow-glow;
+  }
+  .section-title {
+    @apply font-display text-3xl md:text-5xl font-bold tracking-tight;
+  }
+  .input {
+    @apply w-full rounded-xl bg-white/[0.05] border border-white/10 px-4 py-3 text-white placeholder:text-smoke focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/40 transition;
+  }
+}
+
+::selection {
+  background: rgba(212, 175, 55, 0.35);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#8c7326, #d4af37);
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ---- Hologram ---- */
+.holo-img img { filter: saturate(1.1) contrast(1.05); }
+.holo-sweep {
+  background: linear-gradient(115deg,
+    transparent 20%, rgba(120,220,255,0.18) 32%, rgba(212,175,55,0.28) 45%,
+    rgba(255,120,220,0.14) 58%, transparent 72%);
+  background-size: 250% 250%;
+  animation: holoSweep 3.6s linear infinite;
+  mix-blend-mode: screen;
+}
+.holo-lines {
+  background: repeating-linear-gradient(to bottom,
+    rgba(212,175,55,0.10) 0px, rgba(212,175,55,0.10) 1px,
+    transparent 1px, transparent 4px);
+  animation: holoLines 7s linear infinite;
+  mix-blend-mode: screen;
+}
+@keyframes holoSweep { 0% { background-position: 120% 0; } 100% { background-position: -130% 0; } }
+@keyframes holoLines { 0% { background-position: 0 0; } 100% { background-position: 0 120px; } }
