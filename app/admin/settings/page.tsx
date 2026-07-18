@@ -93,7 +93,7 @@ export default function AdminSettings() {
         ) : (
           <label className="flex h-16 cursor-pointer items-center justify-center rounded-xl border border-dashed border-gold/40 text-smoke text-sm hover:bg-gold/5 transition">
             {uploading ? "מעלה…" : "לחצו להעלאת קובץ שמע"}
-            <input type="file" accept="audio/*" className="hidden"
+                        <input type="file" accept=".mp3,.m4a,audio/mpeg,audio/*" className="hidden"
               onChange={(e) => e.target.files?.[0] && uploadMusic(e.target.files[0])} />
           </label>
         )}
