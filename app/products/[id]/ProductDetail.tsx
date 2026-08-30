@@ -11,6 +11,7 @@ import { formatPrice } from "@/lib/utils";
 import Hologram from "@/components/Hologram";
 import ProductCard from "@/components/ProductCard";
 import ShareButton from "@/components/ShareButton";
+import HoloMedia from "@/components/HoloMedia";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import type { Product } from "@/lib/types";
 
@@ -65,12 +66,12 @@ export default function ProductDetail({ product }: { product: Product }) {
           {/* Gallery */}
           <div>
             <div className="glass overflow-hidden aspect-square relative">
-              {gallery[active] ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={gallery[active]} alt={product.name} className="h-full w-full object-cover" />
-              ) : (
-                <div className="h-full w-full grid place-items-center text-gold/20 text-7xl">✦</div>
-              )}
+              <HoloMedia
+                src={gallery[active] ?? null}
+                video={active === 0 ? (product.videos?.[0] ?? null) : null}
+                alt={product.name}
+                className="h-full w-full"
+              />
               {off > 0 && (
                 <span className="absolute top-4 right-4 bg-gold text-ink text-sm font-bold px-3 py-1 rounded-full">
                   −{off}%

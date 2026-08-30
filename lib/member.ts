@@ -67,27 +67,61 @@ export function useMember() {
   return { member, ready, refresh, logout, setMember: write };
 }
 
-/** Award points and write a timeline entry. Recalculates the member's level. */
-export async function awardPoints(memberId: string, ruleKey: string, label?: string, multiplier = 1) {
-  const supabase = createClient();
-  const { data: rule } = await supabase.from("point_rules")
-    .select("points,label,is_active").eq("key", ruleKey).single();
-  if (!rule || !rule.is_active) return;
-
-  const delta = Math.round(rule.points * multiplier);
-  if (delta === 0) return;
-
-  const { data: m } = await supabase.from("members").select("points").eq("id", memberId).single();
-  const newPoints = (m?.points ?? 0) + delta;
-
-  const { data: levels } = await supabase.from("levels")
-    .select("key,min_points").order("min_points", { ascending: false });
-  const newLevel = (levels ?? []).find((l) => newPoints >= l.min_points)?.key ?? "member";
-
-  await supabase.from("members").update({ points: newPoints, level: newLevel }).eq("id", memberId);
-  await supabase.from("member_events").insert({
-    member_id: memberId, kind: "points", label: label || rule.label, points_delta: delta,
+/**
+ * Award points through the server function.
+ * The client can no longer set its own balance — the database decides,
+ * writes the ledger entry, recalculates the level and emits the event.
+ * Pass `idem` (e.g. `order-123`) to make a repeat call harmless.
+ */
+export async function awardPoints(
+  memberId: string,
+  ruleKey: string,
+  label?: string,
+  multiplier = 1,
+  idem?: string
+): Promise<number | null> {
+  const { data, error } = await createClient().rpc("award_points", {
+    p_member_id: memberId,
+    p_rule_key: ruleKey,
+    p_label: label ?? null,
+    p_multiplier: multiplier,
+    p_idem: idem ?? null,
   });
+  if (error) return null;
+  return (data as number) ?? null;
+}
+
+/**
+ * Spend points. Returns the new balance, or null when the member
+ * doesn't have enough — the check happens in the database, not here.
+ */
+export async function spendPoints(
+  memberId: string,
+  amount: number,
+  reason: string,
+  source?: string,
+  idem?: string
+): Promise<number | null> {
+  const { data, error } = await createClient().rpc("spend_points", {
+    p_member_id: memberId,
+    p_amount: amount,
+    p_reason: reason,
+    p_source: source ?? null,
+    p_idem: idem ?? null,
+  });
+  if (error) return null;
+  return (data as number) ?? null;
+}
+
+/** Full points history for the wallet view. */
+export async function pointsHistory(memberId: string, limit = 50) {
+  const { data } = await createClient()
+    .from("points_ledger")
+    .select("id,delta,balance_after,reason,created_at")
+    .eq("member_id", memberId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  return data ?? [];
 }
 
 export async function logEvent(memberId: string, kind: string, label: string) {

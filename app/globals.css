@@ -83,3 +83,93 @@ body {
 }
 @keyframes holoSweep { 0% { background-position: 120% 0; } 100% { background-position: -130% 0; } }
 @keyframes holoLines { 0% { background-position: 0 0; } 100% { background-position: 0 120px; } }
+
+/* ---- Product card hologram ------------------------------------------ */
+/* A restrained sheen + gold bloom that makes the main image feel alive
+   without turning the card into a light show. */
+
+.holo-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.holo-card__media {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* the travelling light band */
+.holo-card__media::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.10) 46%,
+    rgba(212, 175, 55, 0.34) 50%,
+    rgba(255, 255, 255, 0.10) 54%,
+    transparent 62%
+  );
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  animation: holoCardSweep 5.5s ease-in-out infinite;
+  mix-blend-mode: screen;
+  opacity: 0.75;
+}
+
+/* faint scanlines, only visible up close */
+.holo-card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(212, 175, 55, 0.055) 0px,
+    rgba(212, 175, 55, 0.055) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  opacity: 0.5;
+  animation: holoCardLines 9s linear infinite;
+}
+
+/* gold bloom under the card */
+.holo-card__glow {
+  position: absolute;
+  inset: auto 8% -14px 8%;
+  height: 34px;
+  z-index: -1;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.42), transparent 72%);
+  filter: blur(14px);
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.holo-card:hover .holo-card__glow { opacity: 1; }
+.holo-card:hover .holo-card__media::before { animation-duration: 2.6s; opacity: 1; }
+
+@keyframes holoCardSweep {
+  0%   { background-position: 130% 0; }
+  55%  { background-position: -130% 0; }
+  100% { background-position: -130% 0; }
+}
+@keyframes holoCardLines {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 60px; }
+}
+
+/* people who prefer less motion get a still card */
+@media (prefers-reduced-motion: reduce) {
+  .holo-card,
+  .holo-card__media::before,
+  .holo-card__media::after { animation: none !important; transition: none !important; }
+}

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
+import { track } from "@/lib/events";
 
 function sessionId() {
   if (typeof window === "undefined") return null;
@@ -16,6 +17,8 @@ export async function trackProductView(product_id: string) {
     const next = [product_id, ...prev.filter((x) => x !== product_id)].slice(0, 20);
     localStorage.setItem(key, JSON.stringify(next));
   } catch { /* ignore */ }
+
+  track({ name: "product_viewed", entityType: "product", entityId: product_id });
 
   try {
     await createClient().from("product_views").insert({ product_id, session_id: sessionId() });

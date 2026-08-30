@@ -78,7 +78,12 @@ export default function QuickView({
                       className={`relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg border ${i === active ? "border-gold" : "border-white/10 opacity-70"}`}>
                       {m.type === "video" ? (
                         <>
-                          <video src={m.src} muted playsInline preload="metadata" className="h-full w-full object-cover" />
+                          <video
+                            src={m.src} muted playsInline preload="metadata"
+                            onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
+                            onMouseLeave={(e) => { e.currentTarget.pause(); e.currentTarget.currentTime = 0; }}
+                            className="h-full w-full object-cover"
+                          />
                           <span className="absolute inset-0 grid place-items-center text-white text-lg drop-shadow">▶</span>
                         </>
                       ) : (

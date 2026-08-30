@@ -15,6 +15,7 @@ import { notifyOwner } from "@/lib/notify";
 import { markRecovered, saveAbandonedCart } from "@/lib/abandoned";
 import { getChannel } from "@/lib/channel";
 import { syncToSheet } from "@/lib/sheet";
+import { track } from "@/lib/events";
 import type { DeliveryArea } from "@/lib/types";
 
 export default function CheckoutForm() {
@@ -78,6 +79,11 @@ export default function CheckoutForm() {
     if (error) { setErr("שמירת ההזמנה נכשלה. נסו שוב או צרו קשר בוואטסאפ."); setBusy(false); return; }
 
     const num = data?.order_number;
+
+    track({
+      name: "order_created", memberId: member?.id, entityType: "order", entityId: String(num),
+      metadata: { total, items: items.length, region: form.region, coupon: coupon?.code ?? null },
+    });
     if (coupon) await consumeCoupon(coupon.id, coupon.used_count);
     await markRecovered();
 
@@ -101,8 +107,8 @@ export default function CheckoutForm() {
     );
 
     if (member) {
-      await awardPoints(member.id, "order", `הזמנה #${num}`);
-      await awardPoints(member.id, "order_per_100", "בונוס לפי סכום ההזמנה", Math.floor(total / 100));
+      await awardPoints(member.id, "order", `הזמנה #${num}`, 1, `order-${num}`);
+      await awardPoints(member.id, "order_per_100", "בונוס לפי סכום ההזמנה", Math.floor(total / 100), `order-bonus-${num}`);
       await logEvent(member.id, "order", `הזמנה #${num} · ${formatPrice(total)}`);
       await refresh();
     }

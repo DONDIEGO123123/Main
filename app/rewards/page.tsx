@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { useMember } from "@/lib/member";
+import { useMember, spendPoints } from "@/lib/member";
+import { track } from "@/lib/events";
 
 export const dynamic = "force-dynamic";
 
@@ -43,13 +44,24 @@ export default function RewardsPage() {
       });
     }
 
+    // the database validates the balance and writes the ledger entry
+    const balance = await spendPoints(
+      member.id, r.points_cost, `מימוש: ${r.title}`, r.id, `redeem-${member.id}-${r.id}-${Date.now()}`
+    );
+    if (balance === null) { setBusy(null); return; }
+
     await supabase.from("reward_redemptions").insert({
       member_id: member.id, reward_id: r.id, points_spent: r.points_cost, code,
     });
-    await supabase.from("members").update({ points: member.points - r.points_cost }).eq("id", member.id);
+    await supabase.from("rewards_ledger").insert({
+      member_id: member.id, kind: "coupon", ref_id: code,
+      label: r.title, idempotency_key: `rw-${member.id}-${r.id}-${code}`,
+    });
     await supabase.from("member_events").insert({
       member_id: member.id, kind: "points", label: `מימוש: ${r.title}`, points_delta: -r.points_cost,
     });
+    track({ name: "reward_redeemed", memberId: member.id, entityType: "reward",
+            entityId: r.id, metadata: { title: r.title, cost: r.points_cost, code } });
 
     await refresh();
     setBusy(null);

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useMember } from "@/lib/member";
+import { useMember, awardPoints } from "@/lib/member";
 import type { Order } from "@/lib/types";
 
 type Challenge = {
@@ -51,11 +51,11 @@ export default function Challenges() {
         const { error } = await s.from("challenge_completions")
           .insert({ member_id: member.id, challenge_id: c.id });
         if (error) continue; // already recorded
-        await s.from("members").update({ points: member.points + c.reward_points }).eq("id", member.id);
-        await s.from("member_events").insert({
-          member_id: member.id, kind: "points",
-          label: `אתגר הושלם: ${c.title}`, points_delta: c.reward_points,
-        });
+        // idempotency key means a repeated render can never double-pay
+        await awardPoints(
+          member.id, "challenge", `אתגר הושלם: ${c.title}`,
+          c.reward_points, `challenge-${member.id}-${c.id}`
+        );
         setDone((d) => [...d, c.id]);
         refresh();
       }

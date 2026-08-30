@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useMember, hashPin, normalizePhone, makeReferralCode, awardPoints, logEvent, type Member } from "@/lib/member";
+import { track } from "@/lib/events";
 
 export default function JoinForm() {
   const router = useRouter();
@@ -51,7 +52,8 @@ export default function JoinForm() {
     if (error || !data) { setErr("ההרשמה נכשלה, נסו שוב"); setBusy(false); return; }
 
     await logEvent(data.id, "joined", "הצטרפות לקהילה");
-    await awardPoints(data.id, "registration");
+    await awardPoints(data.id, "registration", undefined, 1, `reg-${data.id}`);
+    track({ name: "user_registered", memberId: data.id, metadata: { referred: !!referred_by } });
 
     // welcome coupon, if the shop configured one
     const { data: cfg } = await supabase.from("settings").select("value").eq("key", "site").maybeSingle();
@@ -70,7 +72,10 @@ export default function JoinForm() {
     // reward the referrer
     if (referred_by) {
       const { data: ref } = await supabase.from("members").select("id").eq("referral_code", referred_by).maybeSingle();
-      if (ref) await awardPoints(ref.id, "referral_join", "חבר הצטרף דרך הקישור שלך");
+      if (ref) {
+        await awardPoints(ref.id, "referral_join", "חבר הצטרף דרך הקישור שלך", 1, `refjoin-${data.id}`);
+        track({ name: "referral_converted", memberId: ref.id, entityType: "member", entityId: data.id });
+      }
     }
 
     const { data: fresh } = await supabase.from("members").select("*").eq("id", data.id).single();

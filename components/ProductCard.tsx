@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/lib/types";
@@ -7,6 +6,7 @@ import { useCart } from "@/lib/useCart";
 import { useLang } from "@/lib/i18n";
 import { openCart } from "@/components/CartDrawer";
 import Link from "next/link";
+import HoloMedia from "@/components/HoloMedia";
 
 export default function ProductCard({
   product,
@@ -33,17 +33,12 @@ export default function ProductCard({
       className="glass group overflow-hidden hover:border-gold/30 hover:shadow-glow transition-all duration-500"
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-panel">
-        {product.image_url ? (
-          <Image
-            src={product.image_url}
-            alt={product.name}
-            fill
-            sizes="(max-width:768px) 50vw, 25vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-        ) : (
-          <div className="absolute inset-0 grid place-items-center text-gold/30 font-display text-5xl">✦</div>
-        )}
+        <HoloMedia
+          src={product.image_url}
+          video={product.videos?.[0] ?? null}
+          alt={product.name}
+          className="absolute inset-0"
+        />
         {discount && (
           <span className="absolute top-3 right-3 rounded-full bg-gold text-ink text-xs font-bold px-3 py-1">
             {discount}%-
