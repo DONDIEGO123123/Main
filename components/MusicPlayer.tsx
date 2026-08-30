@@ -12,8 +12,27 @@ export default function MusicPlayer() {
   useEffect(() => {
     if (!music_url || !ref.current) return;
     if (localStorage.getItem("luxe-music") === "off") return;
-    ref.current.volume = 0.35;
-    ref.current.play().then(() => setPlaying(true)).catch(() => setBlocked(true));
+    const a = ref.current;
+    a.volume = 0.35;
+
+    const tryPlay = () => a.play().then(() => { setPlaying(true); setBlocked(false); });
+
+    // 1. try straight away (works on desktop and on repeat visits)
+    tryPlay().catch(() => {
+      setBlocked(true);
+      // 2. blocked by the browser — start on the visitor's first interaction,
+      //    any tap / scroll / key counts, no need to press the music button.
+      const kick = () => { tryPlay().then(cleanup).catch(() => {}); };
+      const cleanup = () => {
+        ["pointerdown", "touchstart", "click", "keydown", "scroll"].forEach((e) =>
+          window.removeEventListener(e, kick)
+        );
+      };
+      ["pointerdown", "touchstart", "click", "keydown", "scroll"].forEach((e) =>
+        window.addEventListener(e, kick, { once: false, passive: true })
+      );
+      return cleanup;
+    });
   }, [music_url]);
 
   if (!music_url) return null;

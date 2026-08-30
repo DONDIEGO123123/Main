@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import type { Category } from "@/lib/types";
+import CartButton from "@/components/CartButton";
 
 const links = [
   { href: "/", label: "בית" },
@@ -14,6 +15,7 @@ const links = [
   { href: "/reviews", label: "ביקורות" },
   { href: "/faq", label: "שאלות" },
   { href: "/contact", label: "צור קשר" },
+  { href: "/orders", label: "מעקב הזמנה" },
 ];
 
 export default function Navbar() {
@@ -109,6 +111,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <CartButton />
           <button
             aria-label="חיפוש"
             onClick={() => setSearchOpen((v) => !v)}

@@ -70,3 +70,51 @@ export type Faq = {
   sort_order: number;
   is_active: boolean;
 };
+
+export type CartItem = {
+  product_id: string;
+  name: string;
+  price: number;
+  image_url: string | null;
+  qty: number;
+};
+
+export type Order = {
+  id: string;
+  order_number: number;
+  customer_name: string;
+  customer_phone: string;
+  customer_address: string;
+  city: string;
+  region: string | null;
+  notes: string;
+  items: CartItem[];
+  subtotal: number;
+  delivery_fee: number;
+  total: number;
+  status: "new" | "confirmed" | "shipped" | "delivered" | "cancelled";
+  referral_code: string | null;
+  created_at: string;
+};
+
+export type SiteSettings = {
+  name?: string;
+  tagline?: string;
+  telegram?: string;
+  whatsapp?: string;
+  music_url?: string;
+  // Deal of the Day
+  deal_enabled?: boolean;
+  deal_product_id?: string;
+  deal_price?: number;
+  deal_ends_at?: string;
+  // VIP / funnel toggles
+  vip_enabled?: boolean;
+  vip_telegram?: string;
+  wizard_enabled?: boolean;
+  referral_enabled?: boolean;
+  referral_reward?: string;
+  // "why us" configurable text
+  why_title?: string;
+  why_items?: { icon: string; title: string; text: string }[];
+};

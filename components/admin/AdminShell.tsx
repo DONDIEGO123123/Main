@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 
 const nav = [
   { href: "/admin/dashboard", label: "לוח בקרה", icon: "◆" },
+  { href: "/admin/orders", label: "הזמנות", icon: "🛍" },
   { href: "/admin/products", label: "מוצרים", icon: "▣" },
   { href: "/admin/categories", label: "קטגוריות", icon: "☰" },
   { href: "/admin/promotions", label: "מבצעים", icon: "%" },
@@ -13,6 +14,9 @@ const nav = [
   { href: "/admin/reviews", label: "ביקורות", icon: "★" },
   { href: "/admin/faq", label: "שאלות נפוצות", icon: "?" },
   { href: "/admin/delivery", label: "אזורי משלוח", icon: "➤" },
+  { href: "/admin/members", label: "חברי קהילה", icon: "👥" },
+  { href: "/admin/levels", label: "רמות ונקודות", icon: "⭐" },
+  { href: "/admin/referrals", label: "חבר מביא חבר", icon: "🎁" },
   { href: "/admin/settings", label: "הגדרות אתר", icon: "⚙" },
 ];
 

@@ -16,11 +16,17 @@ const sectionLabels: Record<string, string> = {
 type Site = {
   name?: string; tagline?: string;
   telegram?: string; whatsapp?: string; music_url?: string;
+  deal_enabled?: boolean; deal_product_id?: string; deal_price?: number; deal_ends_at?: string;
+  vip_enabled?: boolean; vip_telegram?: string;
+  wizard_enabled?: boolean;
+  referral_enabled?: boolean; referral_reward?: string;
+  why_title?: string;
 };
 
 export default function AdminSettings() {
   const [sections, setSections] = useState<Record<string, boolean>>({});
   const [site, setSite] = useState<Site>({});
+  const [products, setProducts] = useState<{ id: string; name: string; price: number }[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -35,7 +41,18 @@ export default function AdminSettings() {
       setSite((b.data?.value as Site) ?? {});
       setLoaded(true);
     });
+    supabase.from("products").select("id, name, price").eq("is_active", true).order("name")
+      .then(({ data }) => setProducts(data ?? []));
   }, []);
+
+  const toggleRow = (label: string, val: boolean, on: (v: boolean) => void) => (
+    <div className="flex items-center justify-between">
+      <span>{label}</span>
+      <button onClick={() => on(!val)} className={`w-14 h-8 rounded-full transition relative ${val ? "bg-gold" : "bg-white/10"}`}>
+        <span className={`absolute top-1 h-6 w-6 rounded-full bg-ink transition-all ${val ? "right-1" : "right-7"}`} />
+      </button>
+    </div>
+  );
 
   const uploadMusic = async (file: File) => {
     setUploading(true);
@@ -93,10 +110,66 @@ export default function AdminSettings() {
         ) : (
           <label className="flex h-16 cursor-pointer items-center justify-center rounded-xl border border-dashed border-gold/40 text-smoke text-sm hover:bg-gold/5 transition">
             {uploading ? "מעלה…" : "לחצו להעלאת קובץ שמע"}
-                        <input type="file" accept=".mp3,.m4a,audio/mpeg,audio/*" className="hidden"
+            <input type="file" accept=".mp3,.m4a,.wav,.ogg,.aac,audio/mpeg,audio/*" className="hidden"
               onChange={(e) => e.target.files?.[0] && uploadMusic(e.target.files[0])} />
           </label>
         )}
+      </div>
+
+      <div className="glass p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <p className="font-semibold">🔥 Deal of the Day</p>
+          <button onClick={() => setSite({ ...site, deal_enabled: !site.deal_enabled })}
+            className={`w-14 h-8 rounded-full transition relative ${site.deal_enabled ? "bg-gold" : "bg-white/10"}`}>
+            <span className={`absolute top-1 h-6 w-6 rounded-full bg-ink transition-all ${site.deal_enabled ? "right-1" : "right-7"}`} />
+          </button>
+        </div>
+        {site.deal_enabled && (
+          <div className="space-y-3">
+            <div>
+              <label className="text-sm text-smoke block mb-1">בחירת מוצר</label>
+              <select className="input" value={site.deal_product_id ?? ""} onChange={(e) => setSite({ ...site, deal_product_id: e.target.value })}>
+                <option value="">— בחר מוצר —</option>
+                {products.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.price} ₪)</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-sm text-smoke block mb-1">מחיר מבצע (ריק = מחיר רגיל)</label>
+              <input type="number" className="input" dir="ltr" value={site.deal_price ?? ""} onChange={(e) => setSite({ ...site, deal_price: e.target.value ? Number(e.target.value) : undefined })} />
+            </div>
+            <div>
+              <label className="text-sm text-smoke block mb-1">תאריך סיום (ריק = בלי טיימר)</label>
+              <input type="datetime-local" className="input" dir="ltr" value={site.deal_ends_at ?? ""} onChange={(e) => setSite({ ...site, deal_ends_at: e.target.value || undefined })} />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="glass p-6 space-y-4">
+        <p className="font-semibold">מועדון VIP / טלגרם</p>
+        {toggleRow("הצגת אזור VIP בדף הבית", site.vip_enabled !== false, (v) => setSite({ ...site, vip_enabled: v }))}
+        <div>
+          <label className="text-sm text-smoke block mb-1">קישור טלגרם ל-VIP (ריק = הטלגרם הרגיל)</label>
+          <input className="input" dir="ltr" placeholder="https://t.me/vipchannel" value={site.vip_telegram ?? ""} onChange={(e) => setSite({ ...site, vip_telegram: e.target.value })} />
+        </div>
+      </div>
+
+      <div className="glass p-6 space-y-4">
+        <p className="font-semibold">כלים בדף הבית</p>
+        {toggleRow('אשף "לא יודע מה לבחור"', site.wizard_enabled !== false, (v) => setSite({ ...site, wizard_enabled: v }))}
+        <div>
+          <label className="text-sm text-smoke block mb-1">כותרת אזור "למה אנחנו"</label>
+          <input className="input" value={site.why_title ?? ""} placeholder="איכות שאתה מרגיש. מחיר שאתה לא מתווכח עליו." onChange={(e) => setSite({ ...site, why_title: e.target.value })} />
+        </div>
+      </div>
+
+      <div className="glass p-6 space-y-4">
+        <p className="font-semibold">🎁 חבר מביא חבר</p>
+        {toggleRow("הפעלת התוכנית", site.referral_enabled !== false, (v) => setSite({ ...site, referral_enabled: v }))}
+        <div>
+          <label className="text-sm text-smoke block mb-1">תיאור ההטבה (מוצג ללקוח)</label>
+          <input className="input" placeholder="שתפו חבר — ושניכם מקבלים 10% הנחה" value={site.referral_reward ?? ""} onChange={(e) => setSite({ ...site, referral_reward: e.target.value })} />
+        </div>
       </div>
 
       <div className="glass p-6 space-y-4">

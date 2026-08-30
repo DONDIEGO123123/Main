@@ -23,8 +23,8 @@ export default function AdminProducts() {
         { key: "price", label: "מחיר (₪)", type: "number" },
         { key: "compare_at_price", label: "מחיר לפני הנחה (₪, לא חובה)", type: "number" },
         { key: "image_url", label: "תמונה ראשית", type: "image" },
-        { key: "gallery", label: "תמונות נוספות", type: "media", accept: "image/*" },
-        { key: "videos", label: "סרטונים", type: "media", accept: "video/*" },
+        { key: "gallery", label: "תמונות נוספות", type: "media", accept: ".jpg,.jpeg,.png,.webp,.heic,image/*" },
+        { key: "videos", label: "סרטונים", type: "media", accept: ".mp4,.mov,.webm,.m4v,video/*" },
         {
           key: "category_id", label: "קטגוריה", type: "select",
           options: cats.map((c) => ({ value: c.id, label: c.name })),

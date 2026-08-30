@@ -71,3 +71,23 @@ middleware.ts         Auth guard for /admin
 - Name/logo text: search for `LUXE` (Navbar, Footer, LoadingScreen, layout metadata).
 - Colors: `tailwind.config.ts` (`ink`, `gold`, `panel`).
 - Fonts: `app/layout.tsx` (Frank Ruhl Libre + Assistant).
+
+---
+
+## עדכון: מערכת הזמנות + משפך מכירה (v2)
+
+**להרצה חד-פעמית ב-Supabase SQL Editor:** התוכן של `supabase/upgrade.sql`
+(יוצר טבלאות orders + referrals, פוליסות RLS, ופונקציות ספירה).
+
+מה נוסף:
+- עגלת קניות (drawer) + כפתורי "לעגלה" בכל מוצר
+- עמוד checkout `/checkout` — יוצר הזמנה במסד ופותח אישור בוואטסאפ
+- מעקב הזמנות ללקוח `/orders` (לפי טלפון)
+- ניהול הזמנות באדמין `/admin/orders` (סטטוסים, פרטי לקוח, סה"כ מכירות)
+- Deal of the Day עם טיימר אמיתי (אדמין → הגדרות אתר)
+- אשף "לא יודע מה לבחור" (המלצות לפי קטגוריה+תקציב)
+- Social Proof: דירוג ממוצע אמיתי + טופס "השאירו ביקורת" (ממתין לאישור)
+- מועדון VIP / טלגרם
+- חבר מביא חבר `/referral` + מעקב באדמין `/admin/referrals`
+
+כל התכונות ניתנות להפעלה/כיבוי מ**אדמין → הגדרות אתר**.

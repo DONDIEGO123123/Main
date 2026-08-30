@@ -8,6 +8,10 @@ import BackToTop from "@/components/BackToTop";
 import CookieBanner from "@/components/CookieBanner";
 import Analytics from "@/components/Analytics";
 import MusicPlayer from "@/components/MusicPlayer";
+import CartButton from "@/components/CartButton";
+import MemberButton from "@/components/MemberButton";
+import CartDrawer from "@/components/CartDrawer";
+import ReferralCapture from "@/components/ReferralCapture";
 import LoadingScreen from "@/components/LoadingScreen";
 import Script from "next/script";
 
@@ -63,6 +67,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CookieBanner />
         <Analytics />
         <MusicPlayer />
+        <CartButton />
+        <MemberButton />
+        <CartDrawer />
+        <ReferralCapture />
         {gaId && (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />

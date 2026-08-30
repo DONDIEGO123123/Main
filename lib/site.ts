@@ -5,6 +5,11 @@ import { createClient } from "@/lib/supabase/client";
 export type SiteSettings = {
   name?: string; tagline?: string;
   telegram?: string; whatsapp?: string; music_url?: string;
+  vip_enabled?: boolean; vip_telegram?: string;
+  wizard_enabled?: boolean;
+  referral_enabled?: boolean; referral_reward?: string;
+  deal_enabled?: boolean; deal_product_id?: string; deal_price?: number; deal_ends_at?: string;
+  why_title?: string;
 };
 
 let cache: SiteSettings | null = null;

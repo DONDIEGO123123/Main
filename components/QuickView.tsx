@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { formatPrice } from "@/lib/utils";
 import { useSiteSettings } from "@/lib/site";
 import Hologram from "@/components/Hologram";
+import AddToCart from "@/components/AddToCart";
 import type { Product } from "@/lib/types";
 
 
@@ -106,8 +107,9 @@ export default function QuickView({
                 <span className="relative z-10">✦ תצוגת הולוגרמה</span>
                 <span className="absolute inset-0 holo-sweep opacity-40" aria-hidden />
               </button>
+              <AddToCart product={product} className="mt-3 w-full py-3" />
               <div className="mt-3 grid grid-cols-2 gap-3">
-                <a href={site.whatsapp || process.env.NEXT_PUBLIC_WHATSAPP_URL || "#"} target="_blank" rel="noopener noreferrer" className="btn-gold py-2.5 text-sm">
+                <a href={site.whatsapp || process.env.NEXT_PUBLIC_WHATSAPP_URL || "#"} target="_blank" rel="noopener noreferrer" className="btn-ghost py-2.5 text-sm text-center">
                   הזמנה בוואטסאפ
                 </a>
                 <button onClick={share} className="btn-ghost py-2.5 text-sm">שיתוף</button>

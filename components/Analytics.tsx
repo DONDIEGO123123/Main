@@ -12,6 +12,12 @@ export default function Analytics() {
     if (isAdmin) return;
     const supabase = createClient();
 
+    // --- capture referral code from the URL (?ref=CODE) ---
+    try {
+      const ref = new URLSearchParams(window.location.search).get("ref");
+      if (ref) localStorage.setItem("luxe-ref", ref);
+    } catch { /* ignore */ }
+
     // --- unique visit per session ---
     try {
       if (!sessionStorage.getItem("luxe-visit")) {
