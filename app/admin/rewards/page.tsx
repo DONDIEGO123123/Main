@@ -6,6 +6,7 @@ export default function AdminRewards() {
     <EntityManager
       title="הטבות למימוש"
       table="rewards"
+      listKeys={["title", "points_cost"]}
       fields={[
         { key: "title", label: "שם ההטבה", type: "text" },
         { key: "description", label: "תיאור", type: "textarea" },

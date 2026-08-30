@@ -6,6 +6,7 @@ export default function AdminChallenges() {
     <EntityManager
       title="אתגרי קהילה"
       table="challenges"
+      listKeys={["title", "reward_points"]}
       fields={[
         { key: "title", label: "שם האתגר", type: "text" },
         { key: "description", label: "תיאור", type: "textarea" },

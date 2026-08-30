@@ -6,6 +6,7 @@ export default function AdminCoupons() {
     <EntityManager
       title="קופונים"
       table="coupons"
+      listKeys={["code", "value"]}
       fields={[
         { key: "code", label: "קוד הקופון", type: "text" },
         { key: "kind", label: "סוג", type: "select", options: [

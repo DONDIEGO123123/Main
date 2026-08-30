@@ -36,11 +36,19 @@ export default function EntityManager({
   table: string;
   title: string;
   fields: FieldDef[];
-  listKeys: string[];
+  listKeys?: string[];
   slugFrom?: string;
   orderBy?: string;
   ascending?: boolean;
 }) {
+  // when not supplied, show the first couple of text-ish fields in the list
+  const keys = listKeys && listKeys.length > 0
+    ? listKeys
+    : fields
+        .filter((f) => f.type === "text" || f.type === "textarea" || f.type === "number")
+        .slice(0, 2)
+        .map((f) => f.key);
+
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Row | null>(null);
@@ -141,7 +149,7 @@ export default function EntityManager({
                 />
               )}
               <div className="min-w-0 flex-1">
-                {listKeys.map((k, i) => (
+                {keys.map((k, i) => (
                   <p key={k} className={i === 0 ? "font-semibold truncate" : "text-smoke text-sm truncate"}>
                     {String(r[k] ?? "")}
                   </p>

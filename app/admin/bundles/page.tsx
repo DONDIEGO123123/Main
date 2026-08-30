@@ -6,6 +6,7 @@ export default function AdminBundles() {
     <EntityManager
       title="חבילות מוצרים"
       table="bundles"
+      listKeys={["name", "price"]}
       fields={[
         { key: "name", label: "שם החבילה", type: "text" },
         { key: "description", label: "תיאור", type: "textarea" },

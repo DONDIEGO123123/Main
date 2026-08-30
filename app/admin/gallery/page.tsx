@@ -6,6 +6,7 @@ export default function AdminGallery() {
     <EntityManager
       title="גלריית לקוחות"
       table="customer_photos"
+      listKeys={["caption"]}
       fields={[
         { key: "image_url", label: "תמונה", type: "image" },
         { key: "caption", label: "כיתוב (אופציונלי)", type: "text" },
