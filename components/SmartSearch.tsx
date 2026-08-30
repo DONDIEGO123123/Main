@@ -6,6 +6,7 @@ import { useSiteSettings } from "@/lib/site";
 import { useLang } from "@/lib/i18n";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/lib/types";
+import { score } from "@/lib/search-utils";
 
 export default function SmartSearch({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [q, setQ] = useState("");
@@ -17,19 +18,30 @@ export default function SmartSearch({ open, onClose }: { open: boolean; onClose:
 
   useEffect(() => { if (open) setTimeout(() => inputRef.current?.focus(), 100); }, [open]);
 
+  const [all, setAll] = useState<Product[]>([]);
+
+  // load the catalogue once so typo-tolerant matching can run instantly
+  useEffect(() => {
+    if (!open || all.length > 0) return;
+    createClient().from("products").select("*").eq("is_active", true).limit(500)
+      .then(({ data }) => setAll((data as Product[]) ?? []));
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (!q.trim()) { setResults([]); return; }
     setLoading(true);
-    const t = setTimeout(async () => {
-      const { data } = await createClient().from("products")
-        .select("*").eq("is_active", true)
-        .or(`name.ilike.%${q}%,description.ilike.%${q}%`)
-        .limit(8);
-      setResults((data as Product[]) ?? []);
+    const timer = setTimeout(() => {
+      const ranked = all
+        .map((p) => ({ p, s: Math.max(score(p.name, q), score(p.description ?? "", q) - 1) }))
+        .filter((x) => x.s > 0)
+        .sort((a, b) => b.s - a.s)
+        .slice(0, 8)
+        .map((x) => x.p);
+      setResults(ranked);
       setLoading(false);
-    }, 250);
-    return () => clearTimeout(t);
-  }, [q]);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [q, all]);
 
   if (!open) return null;
 

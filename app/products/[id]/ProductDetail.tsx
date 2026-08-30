@@ -11,6 +11,7 @@ import { formatPrice } from "@/lib/utils";
 import Hologram from "@/components/Hologram";
 import ProductCard from "@/components/ProductCard";
 import ShareButton from "@/components/ShareButton";
+import RecentlyViewed from "@/components/RecentlyViewed";
 import type { Product } from "@/lib/types";
 
 type Faq = { id: string; question: string; answer: string };
@@ -115,6 +116,12 @@ export default function ProductDetail({ product }: { product: Product }) {
               </div>
             </div>
 
+            {product.stock !== null && product.stock > 0 && product.stock <= 5 && (
+              <p className="text-gold text-sm">
+                🔥 נותרו {product.stock} במלאי
+              </p>
+            )}
+
             {product.description && (
               <p className="text-smoke leading-relaxed whitespace-pre-line">{product.description}</p>
             )}
@@ -198,6 +205,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             </div>
           </section>
         )}
+        <RecentlyViewed excludeId={product.id} />
       </main>
 
       {/* Sticky mobile add-to-cart */}

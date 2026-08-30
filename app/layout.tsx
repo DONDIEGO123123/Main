@@ -11,6 +11,7 @@ import MusicPlayer from "@/components/MusicPlayer";
 import CartButton from "@/components/CartButton";
 import MemberButton from "@/components/MemberButton";
 import InstallPrompt from "@/components/InstallPrompt";
+import ExitOffer from "@/components/ExitOffer";
 import MaintenanceGate from "@/components/MaintenanceGate";
 import ReferralCapture from "@/components/ReferralCapture";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartButton />
         <MemberButton />
         <InstallPrompt />
+        <ExitOffer />
         <ReferralCapture />
         {gaId && (
           <>

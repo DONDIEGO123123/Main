@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import { score } from "@/lib/search-utils";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import ProductCard from "./ProductCard";
@@ -22,6 +23,8 @@ export default function ProductsExplorer({
   const [sort, setSort] = useState<"new" | "price-asc" | "price-desc">("new");
   const [page, setPage] = useState(1);
   const [quick, setQuick] = useState<Product | null>(null);
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
   const wishlist = useWishlist();
 
   const catIdBySlug = useMemo(
@@ -29,19 +32,29 @@ export default function ProductsExplorer({
     [categories]
   );
 
+  const priceCeiling = useMemo(
+    () => Math.max(100, ...products.map((p) => p.price)),
+    [products]
+  );
+
   const filtered = useMemo(() => {
     let list = products;
     if (cat !== "all") list = list.filter((p) => p.category_id === catIdBySlug[cat]);
     if (q.trim()) {
-      const t = q.trim().toLowerCase();
-      list = list.filter(
-        (p) => p.name.toLowerCase().includes(t) || p.description.toLowerCase().includes(t)
-      );
+      list = list
+        .map((p) => ({ p, s: Math.max(score(p.name, q), score(p.description ?? "", q) - 1) }))
+        .filter((x) => x.s > 0)
+        .sort((a, b) => b.s - a.s)
+        .map((x) => x.p);
     }
+    if (maxPrice !== null) list = list.filter((p) => p.price <= maxPrice);
+    if (tags.includes("sale")) list = list.filter((p) => p.compare_at_price && p.compare_at_price > p.price);
+    if (tags.includes("stock")) list = list.filter((p) => p.stock === null || p.stock > 0);
+    if (tags.includes("featured")) list = list.filter((p) => p.is_featured);
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
     return list;
-  }, [products, q, cat, sort, catIdBySlug]);
+  }, [products, q, cat, sort, catIdBySlug, maxPrice, tags]);
 
   const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const current = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
@@ -91,6 +104,55 @@ export default function ProductsExplorer({
           <option value="price-asc">מחיר: מהנמוך לגבוה</option>
           <option value="price-desc">מחיר: מהגבוה לנמוך</option>
         </select>
+      </div>
+
+      {/* Advanced filters */}
+      <div className="glass p-4 mt-4 space-y-4">
+        <div>
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-smoke">מחיר עד</span>
+            <span className="text-gold tabular-nums">
+              {maxPrice === null ? "ללא הגבלה" : `₪${maxPrice}`}
+            </span>
+          </div>
+          <input
+            type="range" min={0} max={priceCeiling} step={10}
+            value={maxPrice ?? priceCeiling}
+            onChange={(e) => {
+              const v = +e.target.value;
+              setMaxPrice(v >= priceCeiling ? null : v);
+              setPage(1);
+            }}
+            className="w-full accent-gold"
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {[
+            { k: "sale", label: "🔥 במבצע" },
+            { k: "stock", label: "✓ במלאי" },
+            { k: "featured", label: "💎 מובילים" },
+          ].map((f) => (
+            <button key={f.k}
+              onClick={() => {
+                setTags(tags.includes(f.k) ? tags.filter((x) => x !== f.k) : [...tags, f.k]);
+                setPage(1);
+              }}
+              className={`px-3 py-1.5 rounded-full text-sm border transition ${
+                tags.includes(f.k)
+                  ? "bg-gold text-ink border-gold font-semibold"
+                  : "border-white/15 text-smoke hover:border-gold/40"
+              }`}>
+              {f.label}
+            </button>
+          ))}
+          {(maxPrice !== null || tags.length > 0) && (
+            <button onClick={() => { setMaxPrice(null); setTags([]); setPage(1); }}
+              className="px-3 py-1.5 rounded-full text-sm text-smoke hover:text-gold transition">
+              נקה סינון
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Grid */}

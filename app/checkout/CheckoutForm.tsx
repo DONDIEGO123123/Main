@@ -9,6 +9,7 @@ import { useLang } from "@/lib/i18n";
 import { useMember, awardPoints, logEvent } from "@/lib/member";
 import { formatPrice } from "@/lib/utils";
 import CouponBox from "@/components/CouponBox";
+import CheckoutUpsell from "@/components/CheckoutUpsell";
 import { consumeCoupon, type Coupon } from "@/lib/coupon";
 import { notifyOwner } from "@/lib/notify";
 import { markRecovered, saveAbandonedCart } from "@/lib/abandoned";
@@ -172,6 +173,8 @@ export default function CheckoutForm() {
             </div>
           ))}
         </div>
+        <CheckoutUpsell />
+
         <div className="border-t border-white/10 pt-4">
           <CouponBox subtotal={subtotal} memberLevel={member?.level} onApply={(c, d) => { setCoupon(c); setDiscount(d); }} />
         </div>
