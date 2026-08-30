@@ -9,6 +9,8 @@ import { useMember, awardPoints, logEvent } from "@/lib/member";
 import { formatPrice } from "@/lib/utils";
 import CouponBox from "@/components/CouponBox";
 import { consumeCoupon, type Coupon } from "@/lib/coupon";
+import { notifyOwner } from "@/lib/notify";
+import { markRecovered, saveAbandonedCart } from "@/lib/abandoned";
 import type { DeliveryArea } from "@/lib/types";
 
 export default function CheckoutForm() {
@@ -22,6 +24,10 @@ export default function CheckoutForm() {
   useEffect(() => {
     if (member) setForm((f) => ({ ...f, name: f.name || member.display_name, phone: f.phone || member.phone }));
   }, [member]);
+
+  useEffect(() => {
+    saveAbandonedCart(items, subtotal, form.phone || undefined, member?.id);
+  }, [items, subtotal, form.phone, member?.id]);
   const [busy, setBusy] = useState(false);
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [discount, setDiscount] = useState(0);
@@ -67,6 +73,14 @@ export default function CheckoutForm() {
 
     const num = data?.order_number;
     if (coupon) await consumeCoupon(coupon.id, coupon.used_count);
+    await markRecovered();
+
+    notifyOwner(
+      `🛍️ <b>הזמנה חדשה #${num}</b>\n\n` +
+      `👤 ${form.name}\n📞 ${form.phone}\n📍 ${form.region}\n\n` +
+      items.map((i) => `• ${i.name} × ${i.qty}`).join("\n") +
+      `\n\n💰 סה״כ: ${formatPrice(total)}`
+    );
 
     if (member) {
       await awardPoints(member.id, "order", `הזמנה #${num}`);
