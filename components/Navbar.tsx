@@ -20,6 +20,7 @@ const links = [
   { href: "/faq", label: "שאלות", k: "faq" },
   { href: "/contact", label: "צור קשר", k: "contact" },
   { href: "/community", label: "קהילה", k: "community" },
+  { href: "/support", label: "תמיכה" },
   { href: "/orders", label: "מעקב הזמנה", k: "myOrders" },
 ];
 

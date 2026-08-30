@@ -9,6 +9,7 @@ import { canAccess, inEarlyAccess } from "@/lib/wallet";
 import { openCart } from "@/components/CartDrawer";
 import Link from "next/link";
 import HoloMedia from "@/components/HoloMedia";
+import CompareButton from "@/components/CompareButton";
 
 export default function ProductCard({
   product,
@@ -60,6 +61,9 @@ export default function ProductCard({
             {discount}%-
           </span>
         )}
+        <div className="absolute bottom-3 left-3 z-10">
+          <CompareButton id={product.id} />
+        </div>
         {onWish && (
           <button
             aria-label="הוספה למועדפים"

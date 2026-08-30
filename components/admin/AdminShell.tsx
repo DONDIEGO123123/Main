@@ -30,6 +30,8 @@ const nav = [
   { href: "/admin/maintenance", label: "מצב תחזוקה", icon: "🛠️" },
   { href: "/admin/members", label: "חברי קהילה", icon: "👥" },
   { href: "/admin/crm", label: "ניהול לקוחות", icon: "🤝" },
+  { href: "/admin/tickets", label: "פניות תמיכה", icon: "🆘" },
+  { href: "/admin/search", label: "מה מחפשים", icon: "🔍" },
   { href: "/admin/levels", label: "רמות ונקודות", icon: "⭐" },
   { href: "/admin/gallery", label: "גלריית לקוחות", icon: "📸" },
   { href: "/admin/product-faq", label: "שאלות למוצר", icon: "❓" },

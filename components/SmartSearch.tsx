@@ -39,6 +39,15 @@ export default function SmartSearch({ open, onClose }: { open: boolean; onClose:
         .map((x) => x.p);
       setResults(ranked);
       setLoading(false);
+
+      // record the search so the shop can see what people look for
+      if (q.trim().length >= 2) {
+        createClient().from("search_log").insert({
+          query: q.trim().slice(0, 80),
+          results: ranked.length,
+          session_id: typeof window !== "undefined" ? sessionStorage.getItem("luxe-sid") : null,
+        }).then(() => {}, () => {});
+      }
     }, 150);
     return () => clearTimeout(timer);
   }, [q, all]);

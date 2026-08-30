@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
 import type { Order } from "@/lib/types";
+import OrderTimeline from "@/components/OrderTimeline";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +52,9 @@ function OrdersInner() {
             <div className="flex justify-between items-center">
               <span className="font-bold">#{o.order_number}</span>
               <span className="rounded-full bg-gold/15 text-gold text-xs px-3 py-1">{statusHe[o.status] ?? o.status}</span>
+            </div>
+            <div className="mt-4">
+              <OrderTimeline status={o.status} />
             </div>
             <div className="mt-3 space-y-1 text-sm text-smoke">
               {o.items.map((i, idx) => <p key={idx}>{i.name} ×{i.qty}</p>)}
