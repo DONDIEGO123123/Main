@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import SmartSearch from "@/components/SmartSearch";
 import LangSwitch from "@/components/LangSwitch";
+import NotificationBell from "@/components/NotificationBell";
 import { useLang } from "@/lib/i18n";
 import { useSiteSettings } from "@/lib/site";
 import { createClient } from "@/lib/supabase/client";
@@ -110,6 +111,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <NotificationBell />
           <LangSwitch />
           <button
             aria-label="חיפוש"

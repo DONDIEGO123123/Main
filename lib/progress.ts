@@ -2,6 +2,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { awardPoints } from "@/lib/member";
 import { track } from "@/lib/events";
+import { notify } from "@/lib/notifications";
 
 /**
  * Progress engine: computes a member's real metrics from orders, reviews
@@ -80,6 +81,8 @@ export async function syncProgress(memberId: string, metrics: Metrics) {
     }
     track({ name: "achievement_unlocked", memberId, entityType: "achievement", entityId: a.key,
             metadata: { title: a.title } });
+    notify(memberId, "mission", `הישג נפתח: ${a.title}`,
+           a.reward_points > 0 ? `+${a.reward_points} נקודות` : "", "/me", a.icon, `ach-${a.key}`);
     unlocked.push({ type: "achievement", title: a.title, icon: a.icon, points: a.reward_points });
   }
 
@@ -96,6 +99,8 @@ export async function syncProgress(memberId: string, metrics: Metrics) {
     }
     track({ name: "mission_completed", memberId, entityType: "mission", entityId: m.key,
             metadata: { title: m.title } });
+    notify(memberId, "mission", `משימה הושלמה: ${m.title}`,
+           m.reward_points > 0 ? `+${m.reward_points} נקודות` : "", "/me", m.icon, `mis-${m.key}`);
     unlocked.push({ type: "mission", title: m.title, icon: m.icon, points: m.reward_points });
   }
 
