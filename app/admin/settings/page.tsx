@@ -96,6 +96,8 @@ export default function AdminSettings() {
       <div className="glass p-6 space-y-4">
         <p className="font-semibold">קישורי יצירת קשר</p>
         <p className="text-smoke text-sm">הקישורים לכפתורים הצפים, לדף צור קשר ולכפתור ההזמנה במוצרים. נכנס לתוקף מיד.</p>
+        {input("name", "שם האתר", "LUXE")}
+        {input("tagline", "סלוגן", "יוקרה. איכות. שירות.")}
         {input("telegram", "קישור טלגרם", "https://t.me/username")}
         {input("whatsapp", "קישור וואטסאפ", "https://wa.me/972501234567")}
       </div>

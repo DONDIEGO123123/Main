@@ -1,9 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSiteSettings } from "@/lib/site";
 
 export default function LoadingScreen() {
   const [done, setDone] = useState(false);
+  const site = useSiteSettings();
   useEffect(() => {
     const t = setTimeout(() => setDone(true), 1100);
     return () => clearTimeout(t);
@@ -22,7 +24,7 @@ export default function LoadingScreen() {
             animate={{ opacity: 1, letterSpacing: "0.12em" }}
             transition={{ duration: 0.9, ease: "easeOut" }}
           >
-            LUXE
+            {site.name || "LUXE"}
           </motion.p>
         </motion.div>
       )}

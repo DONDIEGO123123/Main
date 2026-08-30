@@ -94,6 +94,10 @@ export type Order = {
   total: number;
   status: "new" | "confirmed" | "shipped" | "delivered" | "cancelled";
   referral_code: string | null;
+  tracking_number?: string | null;
+  courier?: string | null;
+  admin_notes?: string | null;
+  channel?: string | null;
   created_at: string;
 };
 

@@ -1,11 +1,14 @@
+"use client";
 import Link from "next/link";
+import { useSiteSettings } from "@/lib/site";
 
 export default function Footer() {
+  const site = useSiteSettings();
   return (
     <footer className="mt-24 border-t border-white/5 bg-panel/60">
       <div className="mx-auto max-w-7xl px-4 py-14 grid gap-10 md:grid-cols-4">
         <div>
-          <p className="font-display text-3xl font-black gold-text">LUXE</p>
+          <p className="font-display text-3xl font-black gold-text">{site.name || "LUXE"}</p>
           <p className="mt-3 text-sm text-smoke leading-relaxed">
             מוצרי פרימיום, שירות אישי ומשלוחים מהירים בכל רחבי הארץ.
           </p>
@@ -32,7 +35,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-white/5 py-5 text-center text-xs text-smoke">
-        © {new Date().getFullYear()} LUXE — כל הזכויות שמורות
+        © {new Date().getFullYear()} {site.name || "LUXE"} — כל הזכויות שמורות
       </div>
     </footer>
   );

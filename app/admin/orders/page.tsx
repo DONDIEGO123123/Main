@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
 import type { Order, CartItem } from "@/lib/types";
+import { buildStatusMessage, waLink } from "@/lib/status-msg";
 
 const STATUS: { key: Order["status"]; label: string; cls: string }[] = [
   { key: "new", label: "חדשה", cls: "bg-gold/20 text-gold border-gold/40" },
@@ -19,6 +20,9 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
   const [openId, setOpenId] = useState<string | null>(null);
+  const [track, setTrack] = useState<{ n: string; c: string }>({ n: "", c: "" });
+  const [notes, setNotes] = useState("");
+  const [msgLink, setMsgLink] = useState<{ id: string; url: string } | null>(null);
 
   const load = async () => {
     const { data } = await createClient()
@@ -31,6 +35,28 @@ export default function AdminOrders() {
   const setStatus = async (id: string, status: Order["status"]) => {
     setOrders((o) => o.map((x) => (x.id === id ? { ...x, status } : x)));
     await createClient().from("orders").update({ status }).eq("id", id);
+
+    const order = orders.find((x) => x.id === id);
+    if (!order) return;
+    const text = await buildStatusMessage({ ...order, status }, status);
+    setMsgLink(text ? { id, url: waLink(order.customer_phone, text) } : null);
+  };
+
+  const saveTracking = async (id: string) => {
+    await createClient().from("orders")
+      .update({ tracking_number: track.n, courier: track.c, admin_notes: notes }).eq("id", id);
+    setOrders((o) => o.map((x) =>
+      x.id === id ? { ...x, tracking_number: track.n, courier: track.c, admin_notes: notes } : x));
+  };
+
+  const openOrder = (o: Order) => {
+    const isOpen = openId === o.id;
+    setOpenId(isOpen ? null : o.id);
+    setMsgLink(null);
+    if (!isOpen) {
+      setTrack({ n: o.tracking_number ?? "", c: o.courier ?? "" });
+      setNotes(o.admin_notes ?? "");
+    }
   };
 
   const del = async (id: string) => {
@@ -84,7 +110,7 @@ export default function AdminOrders() {
             const open = openId === o.id;
             return (
               <div key={o.id} className="glass overflow-hidden">
-                <button onClick={() => setOpenId(open ? null : o.id)}
+                <button onClick={() => openOrder(o)}
                   className="w-full p-4 flex items-center gap-3 text-right">
                   <span className={`px-3 py-1 rounded-full text-xs border shrink-0 ${clsOf(o.status)}`}>
                     {labelOf(o.status)}
@@ -129,6 +155,34 @@ export default function AdminOrders() {
                         <span>סה״כ</span><span className="gold-text">{formatPrice(Number(o.total))}</span>
                       </div>
                     </div>
+
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs text-smoke block mb-1">מספר מעקב</label>
+                        <input className="input" dir="ltr" value={track.n}
+                          onChange={(e) => setTrack({ ...track, n: e.target.value })} />
+                      </div>
+                      <div>
+                        <label className="text-xs text-smoke block mb-1">חברת שליחויות</label>
+                        <input className="input" value={track.c}
+                          onChange={(e) => setTrack({ ...track, c: e.target.value })} />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <label className="text-xs text-smoke block mb-1">הערות פנימיות</label>
+                        <textarea className="input min-h-[60px]" value={notes}
+                          onChange={(e) => setNotes(e.target.value)} />
+                      </div>
+                      <button onClick={() => saveTracking(o.id)} className="btn-gold px-5 py-2 text-sm sm:col-span-2">
+                        שמירת פרטי משלוח
+                      </button>
+                    </div>
+
+                    {msgLink?.id === o.id && (
+                      <a href={msgLink.url} target="_blank" rel="noopener noreferrer"
+                        className="btn-gold block text-center py-3">
+                        📤 שליחת עדכון ללקוח בוואטסאפ
+                      </a>
+                    )}
 
                     <div>
                       <p className="text-smoke text-sm mb-2">עדכון סטטוס</p>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useSiteSettings } from "@/lib/site";
 
 const nav = [
   { href: "/admin/dashboard", label: "לוח בקרה", icon: "◆" },
@@ -15,11 +16,14 @@ const nav = [
   { href: "/admin/faq", label: "שאלות נפוצות", icon: "?" },
   { href: "/admin/delivery", label: "אזורי משלוח", icon: "➤" },
   { href: "/admin/insights", label: "נתונים ותובנות", icon: "📊" },
+  { href: "/admin/messages", label: "הודעות ללקוח", icon: "📤" },
+  { href: "/admin/reviews-request", label: "בקשת ביקורת", icon: "⭐" },
   { href: "/admin/notifications", label: "התראות טלגרם", icon: "🔔" },
   { href: "/admin/profit", label: "רווחיות ומלאי", icon: "💰" },
   { href: "/admin/abandoned", label: "עגלות נטושות", icon: "🛒" },
   { href: "/admin/qr", label: "קוד QR", icon: "📲" },
   { href: "/admin/backup", label: "גיבוי נתונים", icon: "💾" },
+  { href: "/admin/staff", label: "צוות והרשאות", icon: "🔐" },
   { href: "/admin/maintenance", label: "מצב תחזוקה", icon: "🛠️" },
   { href: "/admin/members", label: "חברי קהילה", icon: "👥" },
   { href: "/admin/crm", label: "ניהול לקוחות", icon: "🤝" },
@@ -33,6 +37,7 @@ const nav = [
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
+  const site = useSiteSettings();
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -70,14 +75,14 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     <div className="mx-auto max-w-7xl px-4 py-8 grid lg:grid-cols-[240px_1fr] gap-6">
       {/* Mobile bar */}
       <div className="lg:hidden glass p-3 flex items-center justify-between">
-        <p className="font-display font-black gold-text text-xl">ניהול LUXE</p>
+        <p className="font-display font-black gold-text text-xl">ניהול {site.name || "LUXE"}</p>
         <button onClick={() => setOpen((v) => !v)} className="btn-ghost py-1.5 px-4 text-sm">תפריט</button>
       </div>
       {open && <div className="lg:hidden glass p-3">{Menu}</div>}
 
       <aside className="hidden lg:block">
         <div className="glass p-4 sticky top-24">
-          <p className="font-display font-black gold-text text-2xl px-3 pb-4">ניהול LUXE</p>
+          <p className="font-display font-black gold-text text-2xl px-3 pb-4">ניהול {site.name || "LUXE"}</p>
           {Menu}
         </div>
       </aside>

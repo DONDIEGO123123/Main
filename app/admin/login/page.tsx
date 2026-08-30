@@ -3,8 +3,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
+import { useSiteSettings } from "@/lib/site";
 
 export default function AdminLogin() {
+  const site = useSiteSettings();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -34,7 +36,7 @@ export default function AdminLogin() {
         className="glass-gold w-full max-w-sm p-8 space-y-4"
       >
         <div className="text-center mb-2">
-          <p className="font-display text-3xl font-black gold-text">LUXE</p>
+          <p className="font-display text-3xl font-black gold-text">{site.name || "LUXE"}</p>
           <p className="text-smoke text-sm mt-1">כניסת מנהל</p>
         </div>
         <input

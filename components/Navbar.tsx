@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import SmartSearch from "@/components/SmartSearch";
 import LangSwitch from "@/components/LangSwitch";
 import { useLang } from "@/lib/i18n";
+import { useSiteSettings } from "@/lib/site";
 import { createClient } from "@/lib/supabase/client";
 import type { Category } from "@/lib/types";
 
@@ -23,6 +24,7 @@ const links = [
 
 export default function Navbar() {
   const { t } = useLang();
+  const site = useSiteSettings();
   const [open, setOpen] = useState(false);
   const [mega, setMega] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -58,7 +60,7 @@ export default function Navbar() {
     >
       <nav className="mx-auto max-w-7xl px-4 h-16 md:h-20 flex items-center justify-between gap-4">
         <Link href="/" className="font-display text-2xl md:text-3xl font-black gold-text">
-          LUXE
+          {site.name || "LUXE"}
         </Link>
 
         {/* Desktop */}
