@@ -14,6 +14,7 @@ import { consumeCoupon, type Coupon } from "@/lib/coupon";
 import { notifyOwner } from "@/lib/notify";
 import { markRecovered, saveAbandonedCart } from "@/lib/abandoned";
 import { getChannel } from "@/lib/channel";
+import { syncToSheet } from "@/lib/sheet";
 import type { DeliveryArea } from "@/lib/types";
 
 export default function CheckoutForm() {
@@ -79,6 +80,18 @@ export default function CheckoutForm() {
     const num = data?.order_number;
     if (coupon) await consumeCoupon(coupon.id, coupon.used_count);
     await markRecovered();
+
+    syncToSheet({
+      order_number: num,
+      customer_name: form.name,
+      customer_phone: form.phone,
+      city: form.city,
+      customer_address: form.address,
+      items,
+      delivery_fee: fee,
+      total,
+      status: "new",
+    });
 
     notifyOwner(
       `🛍️ <b>הזמנה חדשה #${num}</b>\n\n` +

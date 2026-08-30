@@ -24,6 +24,7 @@ const nav = [
   { href: "/admin/profit", label: "רווחיות ומלאי", icon: "💰" },
   { href: "/admin/abandoned", label: "עגלות נטושות", icon: "🛒" },
   { href: "/admin/qr", label: "קוד QR", icon: "📲" },
+  { href: "/admin/sheet", label: "סנכרון לגיליון", icon: "📗" },
   { href: "/admin/backup", label: "גיבוי נתונים", icon: "💾" },
   { href: "/admin/staff", label: "צוות והרשאות", icon: "🔐" },
   { href: "/admin/maintenance", label: "מצב תחזוקה", icon: "🛠️" },
