@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { validateCoupon, type Coupon } from "@/lib/coupon";
 import { formatPrice } from "@/lib/utils";
+import { useLang } from "@/lib/i18n";
 
 export default function CouponBox({
   subtotal, memberLevel, onApply,
@@ -10,6 +11,7 @@ export default function CouponBox({
   memberLevel?: string;
   onApply: (c: Coupon | null, discount: number) => void;
 }) {
+  const { t } = useLang();
   const [code, setCode] = useState("");
   const [msg, setMsg] = useState("");
   const [ok, setOk] = useState(false);
@@ -34,15 +36,15 @@ export default function CouponBox({
 
   return (
     <div className="space-y-2">
-      <label className="text-sm text-smoke block">קוד קופון</label>
+      <label className="text-sm text-smoke block">{t("couponCode")}</label>
       <div className="flex gap-2">
         <input className="input flex-1" dir="ltr" placeholder="CODE" value={code} disabled={ok}
           onChange={(e) => setCode(e.target.value.toUpperCase())} />
         {ok ? (
-          <button onClick={clear} className="btn-ghost px-4 text-sm">הסרה</button>
+          <button onClick={clear} className="btn-ghost px-4 text-sm">{t("remove")}</button>
         ) : (
           <button onClick={apply} disabled={busy || !code} className="btn-gold px-5 text-sm disabled:opacity-40">
-            {busy ? "…" : "החל"}
+            {busy ? "…" : t("apply")}
           </button>
         )}
       </div>

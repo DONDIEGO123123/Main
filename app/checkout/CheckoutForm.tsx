@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCart, getReferral } from "@/lib/useCart";
 import { useSiteSettings } from "@/lib/site";
+import { useLang } from "@/lib/i18n";
 import { useMember, awardPoints, logEvent } from "@/lib/member";
 import { formatPrice } from "@/lib/utils";
 import CouponBox from "@/components/CouponBox";
@@ -17,6 +18,7 @@ export default function CheckoutForm() {
   const router = useRouter();
   const { items, subtotal, clear, count } = useCart();
   const site = useSiteSettings();
+  const { t } = useLang();
   const { member, refresh } = useMember();
   const [areas, setAreas] = useState<DeliveryArea[]>([]);
   const [form, setForm] = useState({ name: "", phone: "", address: "", city: "", region: "", notes: "" });
@@ -112,8 +114,8 @@ export default function CheckoutForm() {
     return (
       <div className="glass p-10 text-center">
         <p className="text-gold/30 text-6xl mb-4">✦</p>
-        <p className="text-smoke mb-6">העגלה ריקה</p>
-        <Link href="/products" className="btn-gold inline-block px-8 py-3">לצפייה במוצרים</Link>
+        <p className="text-smoke mb-6">{t("emptyCart")}</p>
+        <Link href="/products" className="btn-gold inline-block px-8 py-3">{t("allProducts")}</Link>
       </div>
     );
   }
@@ -124,17 +126,17 @@ export default function CheckoutForm() {
         <h2 className="font-semibold text-lg">פרטי המזמין</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm text-smoke block mb-1">שם מלא *</label>
+            <label className="text-sm text-smoke block mb-1">{t("fullName")}</label>
             <input className="input" value={form.name} onChange={(e) => set("name", e.target.value)} />
           </div>
           <div>
-            <label className="text-sm text-smoke block mb-1">טלפון *</label>
+            <label className="text-sm text-smoke block mb-1">{t("phone")}</label>
             <input className="input" dir="ltr" inputMode="tel" value={form.phone}
               onChange={(e) => set("phone", e.target.value)} />
           </div>
         </div>
         <div>
-          <label className="text-sm text-smoke block mb-1">אזור משלוח *</label>
+          <label className="text-sm text-smoke block mb-1">{t("region")}</label>
           <select className="input" value={form.region} onChange={(e) => set("region", e.target.value)}>
             <option value="">בחרו אזור…</option>
             {areas.map((a) => (
@@ -146,22 +148,22 @@ export default function CheckoutForm() {
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm text-smoke block mb-1">עיר</label>
+            <label className="text-sm text-smoke block mb-1">{t("city")}</label>
             <input className="input" value={form.city} onChange={(e) => set("city", e.target.value)} />
           </div>
           <div>
-            <label className="text-sm text-smoke block mb-1">כתובת</label>
+            <label className="text-sm text-smoke block mb-1">{t("address")}</label>
             <input className="input" value={form.address} onChange={(e) => set("address", e.target.value)} />
           </div>
         </div>
         <div>
-          <label className="text-sm text-smoke block mb-1">הערות להזמנה</label>
+          <label className="text-sm text-smoke block mb-1">{t("notes")}</label>
           <textarea className="input min-h-[90px]" value={form.notes} onChange={(e) => set("notes", e.target.value)} />
         </div>
       </div>
 
       <div className="lg:col-span-2 glass-gold p-6 h-fit space-y-4 lg:sticky lg:top-24">
-        <h2 className="font-semibold text-lg">סיכום הזמנה</h2>
+        <h2 className="font-semibold text-lg">{t("orderSummary")}</h2>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {items.map((i) => (
             <div key={i.product_id} className="flex justify-between text-sm gap-2">
@@ -175,10 +177,10 @@ export default function CheckoutForm() {
         </div>
 
         <div className="border-t border-white/10 pt-3 space-y-2 text-sm">
-          <div className="flex justify-between"><span className="text-smoke">סכום ביניים</span><span>{formatPrice(subtotal)}</span></div>
+          <div className="flex justify-between"><span className="text-smoke">{t("subtotal")}</span><span>{formatPrice(subtotal)}</span></div>
           <div className="flex justify-between">
-            <span className="text-smoke">משלוח</span>
-            <span>{form.region ? (fee > 0 ? formatPrice(fee) : "חינם") : "—"}</span>
+            <span className="text-smoke">{t("shipping")}</span>
+            <span>{form.region ? (fee > 0 ? formatPrice(fee) : t("free")) : "—"}</span>
           </div>
           {discount > 0 && (
             <div className="flex justify-between text-gold">
@@ -186,13 +188,13 @@ export default function CheckoutForm() {
             </div>
           )}
           <div className="flex justify-between text-lg pt-2 border-t border-white/10">
-            <span className="font-semibold">סה״כ</span>
+            <span className="font-semibold">{t("total")}</span>
             <span className="font-bold gold-text">{formatPrice(total)}</span>
           </div>
         </div>
         {err && <p className="text-red-400 text-sm">{err}</p>}
         <button onClick={submit} disabled={busy} className="btn-gold w-full py-3 disabled:opacity-50">
-          {busy ? "שולח…" : "שליחת הזמנה ←"}
+          {busy ? t("sending") : `${t("sendOrder")} ←`}
         </button>
         <p className="text-smoke text-xs text-center">
           לאחר השליחה תיפתח שיחת וואטסאפ עם פרטי ההזמנה להשלמת התשלום

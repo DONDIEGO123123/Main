@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/useCart";
+import { useLang } from "@/lib/i18n";
 import { formatPrice } from "@/lib/utils";
 import CrossSell from "@/components/CrossSell";
 import CartProgress from "@/components/CartProgress";
@@ -15,6 +16,7 @@ export const CART_OPEN_EVENT = OPEN_EVT;
 
 export default function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { items, setQty, remove, subtotal, count } = useCart();
+  const { t } = useLang();
 
   return (
     <AnimatePresence>
@@ -28,7 +30,7 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
             transition={{ type: "spring", damping: 30, stiffness: 260 }}
           >
             <div className="flex items-center justify-between p-5 border-b border-white/10">
-              <h2 className="font-display text-xl font-bold gold-text">העגלה שלי</h2>
+              <h2 className="font-display text-xl font-bold gold-text">{t("cart")}</h2>
               <button onClick={onClose} aria-label="סגירה"
                 className="h-9 w-9 rounded-full glass text-gold text-xl leading-none">×</button>
             </div>
@@ -37,9 +39,9 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
               <div className="flex-1 grid place-items-center text-center px-8">
                 <div>
                   <p className="text-gold/30 text-6xl mb-4">✦</p>
-                  <p className="text-smoke">העגלה ריקה</p>
+                  <p className="text-smoke">{t("emptyCart")}</p>
                   <Link href="/products" onClick={onClose} className="btn-gold inline-block mt-5 px-6 py-2.5">
-                    לצפייה במוצרים
+                    {t("allProducts")}
                   </Link>
                 </div>
               </div>
@@ -66,7 +68,7 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
                           <button onClick={() => setQty(i.product_id, i.qty + 1)}
                             className="h-8 w-8 rounded-lg glass text-gold text-lg leading-none">+</button>
                           <button onClick={() => remove(i.product_id)}
-                            className="mr-auto text-smoke text-xs hover:text-red-400 transition">הסרה</button>
+                            className="mr-auto text-smoke text-xs hover:text-red-400 transition">{t("remove")}</button>
                         </div>
                       </div>
                     </div>
@@ -79,12 +81,12 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
 
                 <div className="border-t border-white/10 p-5 space-y-4">
                   <div className="flex justify-between text-lg">
-                    <span className="text-smoke">סה״כ ({count} פריטים)</span>
+                    <span className="text-smoke">{t("total")} ({count} {t("items")})</span>
                     <span className="font-bold gold-text">{formatPrice(subtotal)}</span>
                   </div>
                   <p className="text-smoke text-xs">דמי משלוח יחושבו בשלב הבא לפי אזור</p>
                   <Link href="/checkout" onClick={onClose} className="btn-gold block text-center py-3">
-                    למעבר לתשלום ←
+                    {t("checkout")} ←
                   </Link>
                 </div>
               </>

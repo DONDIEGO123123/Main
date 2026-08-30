@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useSiteSettings } from "@/lib/site";
+import { useLang } from "@/lib/i18n";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
@@ -11,6 +12,7 @@ export default function SmartSearch({ open, onClose }: { open: boolean; onClose:
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const site = useSiteSettings();
+  const { t } = useLang();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { if (open) setTimeout(() => inputRef.current?.focus(), 100); }, [open]);
@@ -36,7 +38,7 @@ export default function SmartSearch({ open, onClose }: { open: boolean; onClose:
       <div className="container mx-auto px-4 pt-20 max-w-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="glass p-4">
           <div className="flex gap-2 items-center">
-            <input ref={inputRef} className="input flex-1" placeholder="חיפוש מוצר…"
+            <input ref={inputRef} className="input flex-1" placeholder={t("search")}
               value={q} onChange={(e) => setQ(e.target.value)} />
             <button onClick={onClose} className="h-11 w-11 rounded-xl glass text-gold text-xl">×</button>
           </div>
@@ -45,11 +47,11 @@ export default function SmartSearch({ open, onClose }: { open: boolean; onClose:
 
           {!loading && q.trim() && results.length === 0 && (
             <div className="mt-6 text-center py-6">
-              <p className="text-smoke mb-4">לא מצאת את מה שחיפשת?</p>
+              <p className="text-smoke mb-4">{t("noResults")}</p>
               {site.whatsapp && (
                 <a href={site.whatsapp} target="_blank" rel="noopener noreferrer"
                   className="btn-gold inline-block px-6 py-3">
-                  דבר איתנו בוואטסאפ ←
+                  {t("talkToUs")} ←
                 </a>
               )}
             </div>

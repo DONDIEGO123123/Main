@@ -5,22 +5,24 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import SmartSearch from "@/components/SmartSearch";
 import LangSwitch from "@/components/LangSwitch";
+import { useLang } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/client";
 import type { Category } from "@/lib/types";
 
 const links = [
-  { href: "/", label: "בית" },
-  { href: "/products", label: "מוצרים", mega: true },
-  { href: "/promotions", label: "מבצעים" },
-  { href: "/delivery", label: "משלוחים" },
-  { href: "/reviews", label: "ביקורות" },
-  { href: "/faq", label: "שאלות" },
-  { href: "/contact", label: "צור קשר" },
-  { href: "/community", label: "קהילה" },
-  { href: "/orders", label: "מעקב הזמנה" },
+  { href: "/", label: "בית", k: "home" },
+  { href: "/products", label: "מוצרים", mega: true, k: "products" },
+  { href: "/promotions", label: "מבצעים", k: "promotions" },
+  { href: "/delivery", label: "משלוחים", k: "delivery" },
+  { href: "/reviews", label: "ביקורות", k: "reviews" },
+  { href: "/faq", label: "שאלות", k: "faq" },
+  { href: "/contact", label: "צור קשר", k: "contact" },
+  { href: "/community", label: "קהילה", k: "community" },
+  { href: "/orders", label: "מעקב הזמנה", k: "myOrders" },
 ];
 
 export default function Navbar() {
+  const { t } = useLang();
   const [open, setOpen] = useState(false);
   const [mega, setMega] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -74,7 +76,7 @@ export default function Navbar() {
                   pathname === l.href ? "text-gold" : "text-white/80 hover:text-gold"
                 }`}
               >
-                {l.label}
+                {l.k ? t(l.k) : l.label}
               </Link>
               {l.mega && (
                 <AnimatePresence>
@@ -154,7 +156,7 @@ export default function Navbar() {
                       pathname === l.href ? "bg-gold/10 text-gold" : "hover:bg-white/5"
                     }`}
                   >
-                    {l.label}
+                    {l.k ? t(l.k) : l.label}
                   </Link>
                 </motion.li>
               ))}

@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useCart } from "@/lib/useCart";
+import { useLang } from "@/lib/i18n";
 import type { Product } from "@/lib/types";
 
 export default function AddToCart({ product, className = "" }: { product: Product; className?: string }) {
   const { add } = useCart();
+  const { t } = useLang();
   const [done, setDone] = useState(false);
 
   const onAdd = (e: React.MouseEvent) => {
@@ -20,7 +22,7 @@ export default function AddToCart({ product, className = "" }: { product: Produc
   return (
     <button onClick={onAdd} disabled={soldOut}
       className={`btn-gold py-2.5 text-sm disabled:opacity-40 disabled:cursor-not-allowed transition ${className}`}>
-      {soldOut ? "אזל מהמלאי" : done ? "✓ נוסף לעגלה" : "הוספה לעגלה"}
+      {soldOut ? t("soldOut") : done ? `✓ ${t("added")}` : t("addToCart")}
     </button>
   );
 }

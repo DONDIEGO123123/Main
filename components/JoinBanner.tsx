@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useMember } from "@/lib/member";
+import { useLang } from "@/lib/i18n";
 
 /** Homepage community CTA. Shows a join pitch to guests, a status card to members. */
 export default function JoinBanner() {
   const { member, ready } = useMember();
+  const { t } = useLang();
   if (!ready) return null;
 
   if (member) {
@@ -26,11 +28,11 @@ export default function JoinBanner() {
     <section className="mx-auto max-w-7xl px-4 mt-20">
       <div className="glass-gold p-8 text-center">
         <p className="text-4xl mb-3">🔥</p>
-        <h2 className="font-display text-2xl md:text-3xl font-bold gold-text">הצטרפו לקהילה</h2>
+        <h2 className="font-display text-2xl md:text-3xl font-bold gold-text">{t("joinCommunity")}</h2>
         <p className="text-smoke mt-2 max-w-md mx-auto">
           נקודות על כל הזמנה, רמות VIP עם הנחה קבועה, והטבות בלעדיות. הרשמה עם טלפון בלבד.
         </p>
-        <Link href="/join" className="btn-gold inline-block mt-6 px-8 py-3">הצטרפות חינם ←</Link>
+        <Link href="/join" className="btn-gold inline-block mt-6 px-8 py-3">{t("joinFree")} ←</Link>
       </div>
     </section>
   );

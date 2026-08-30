@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { useLang, type Lang } from "@/lib/i18n";
 
 const OPTIONS: { key: Lang; label: string }[] = [
@@ -8,6 +9,12 @@ const OPTIONS: { key: Lang; label: string }[] = [
 
 export default function LangSwitch() {
   const { lang, setLang } = useLang();
+
+  // keep the document direction in sync (Hebrew RTL, Russian LTR)
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
+  }, [lang]);
   return (
     <div className="flex gap-1 rounded-full glass p-1">
       {OPTIONS.map((o) => (

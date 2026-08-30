@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import { useCart } from "@/lib/useCart";
+import { useLang } from "@/lib/i18n";
 import { openCart } from "@/components/CartDrawer";
 import Link from "next/link";
 
@@ -19,6 +20,7 @@ export default function ProductCard({
   onWish?: (id: string) => void;
 }) {
   const { add } = useCart();
+  const { t } = useLang();
   const discount =
     product.compare_at_price && product.compare_at_price > product.price
       ? Math.round((1 - product.price / product.compare_at_price) * 100)
@@ -61,15 +63,15 @@ export default function ProductCard({
         <div className="absolute inset-x-3 bottom-3 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex gap-2">
           {onQuickView ? (
             <button onClick={() => onQuickView(product)} className="btn-ghost flex-1 py-2 text-sm">
-              צפייה
+              {t("quickView")}
             </button>
           ) : (
             <Link href={`/products/${product.id}`} className="btn-ghost flex-1 py-2 text-sm text-center">
-              צפייה
+              {t("quickView")}
             </Link>
           )}
           <button onClick={() => { add(product, 1); openCart(); }} className="btn-gold flex-1 py-2 text-sm">
-            לעגלה
+            {t("addToCart")}
           </button>
         </div>
       </div>

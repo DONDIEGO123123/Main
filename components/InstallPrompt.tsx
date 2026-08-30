@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useLang } from "@/lib/i18n";
 
 type BIPEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
 
 /** Registers the service worker and offers "add to home screen". */
 export default function InstallPrompt() {
+  const { t } = useLang();
   const [deferred, setDeferred] = useState<BIPEvent | null>(null);
   const [show, setShow] = useState(false);
 
@@ -41,10 +43,10 @@ export default function InstallPrompt() {
     <div className="fixed bottom-24 inset-x-4 z-50 glass-gold p-4 flex items-center gap-3 max-w-md mx-auto">
       <span className="text-2xl">📱</span>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-sm">התקינו את האתר</p>
+        <p className="font-semibold text-sm">{t("installApp")}</p>
         <p className="text-smoke text-xs">גישה מהירה ישירות ממסך הבית</p>
       </div>
-      <button onClick={install} className="btn-gold px-4 py-2 text-sm shrink-0">התקנה</button>
+      <button onClick={install} className="btn-gold px-4 py-2 text-sm shrink-0">{t("install")}</button>
       <button onClick={dismiss} aria-label="סגירה" className="text-smoke text-xl shrink-0">×</button>
     </div>
   );
