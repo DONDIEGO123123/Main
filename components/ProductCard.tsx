@@ -5,6 +5,7 @@ import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import { useCart } from "@/lib/useCart";
 import { openCart } from "@/components/CartDrawer";
+import Link from "next/link";
 
 export default function ProductCard({
   product,
@@ -13,7 +14,7 @@ export default function ProductCard({
   onWish,
 }: {
   product: Product;
-  onQuickView: (p: Product) => void;
+  onQuickView?: (p: Product) => void;
   wished?: boolean;
   onWish?: (id: string) => void;
 }) {
@@ -58,16 +59,24 @@ export default function ProductCard({
           </button>
         )}
         <div className="absolute inset-x-3 bottom-3 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex gap-2">
-          <button onClick={() => onQuickView(product)} className="btn-ghost flex-1 py-2 text-sm">
-            צפייה
-          </button>
+          {onQuickView ? (
+            <button onClick={() => onQuickView(product)} className="btn-ghost flex-1 py-2 text-sm">
+              צפייה
+            </button>
+          ) : (
+            <Link href={`/products/${product.id}`} className="btn-ghost flex-1 py-2 text-sm text-center">
+              צפייה
+            </Link>
+          )}
           <button onClick={() => { add(product, 1); openCart(); }} className="btn-gold flex-1 py-2 text-sm">
             לעגלה
           </button>
         </div>
       </div>
       <div className="p-4">
-        <h3 className="font-semibold truncate">{product.name}</h3>
+        <Link href={`/products/${product.id}`} className="block">
+          <h3 className="font-semibold truncate hover:text-gold transition">{product.name}</h3>
+        </Link>
         <div className="mt-1 flex items-center gap-2">
           <span className="text-gold font-bold">{formatPrice(product.price)}</span>
           {product.compare_at_price && product.compare_at_price > product.price && (

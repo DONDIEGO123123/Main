@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/useCart";
 import { formatPrice } from "@/lib/utils";
+import CrossSell from "@/components/CrossSell";
 
 const OPEN_EVT = "luxe-cart-open";
 /** Open the cart drawer from anywhere (e.g. after "add to cart"). */
@@ -70,6 +71,8 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
                     </div>
                   ))}
                 </div>
+
+                <CrossSell />
 
                 <div className="border-t border-white/10 p-5 space-y-4">
                   <div className="flex justify-between text-lg">
