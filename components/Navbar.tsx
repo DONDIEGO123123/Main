@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import SmartSearch from "@/components/SmartSearch";
 import { createClient } from "@/lib/supabase/client";
 import type { Category } from "@/lib/types";
 import CartButton from "@/components/CartButton";
@@ -21,12 +22,10 @@ const links = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [mega, setMega] = useState(false);
-  const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [cats, setCats] = useState<Category[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -47,11 +46,6 @@ export default function Navbar() {
     setMega(false);
     setSearchOpen(false);
   }, [pathname]);
-
-  const submitSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (search.trim()) router.push(`/products?q=${encodeURIComponent(search.trim())}`);
-  };
 
   return (
     <header
@@ -133,29 +127,8 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Global search */}
-      <AnimatePresence>
-        {searchOpen && (
-          <motion.form
-            onSubmit={submitSearch}
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-b border-white/5 bg-ink/90 backdrop-blur-xl"
-          >
-            <div className="mx-auto max-w-3xl px-4 py-4 flex gap-2">
-              <input
-                autoFocus
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="חיפוש מוצרים…"
-                className="input"
-              />
-              <button className="btn-gold py-2 px-6">חפש</button>
-            </div>
-          </motion.form>
-        )}
-      </AnimatePresence>
+      {/* Global search — live results */}
+      <SmartSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Mobile menu */}
       <AnimatePresence>

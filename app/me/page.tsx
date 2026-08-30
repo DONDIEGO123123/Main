@@ -80,6 +80,15 @@ export default function MePage() {
         {cur?.perks && <p className="text-smoke text-xs mt-4">{cur.perks}</p>}
       </div>
 
+      <Link href="/rewards" className="glass-gold p-5 flex items-center gap-4 hover:border-gold/40 transition">
+        <span className="text-2xl">🎁</span>
+        <div className="flex-1">
+          <p className="font-semibold">מרכז ההטבות</p>
+          <p className="text-smoke text-sm">מימוש נקודות בקופונים והטבות</p>
+        </div>
+        <span className="text-gold">←</span>
+      </Link>
+
       {/* Referral */}
       <div className="glass p-6">
         <h2 className="font-semibold mb-1">👥 חבר מביא חבר</h2>

@@ -16,6 +16,8 @@ const nav = [
   { href: "/admin/delivery", label: "אזורי משלוח", icon: "➤" },
   { href: "/admin/members", label: "חברי קהילה", icon: "👥" },
   { href: "/admin/levels", label: "רמות ונקודות", icon: "⭐" },
+  { href: "/admin/coupons", label: "קופונים", icon: "🏷️" },
+  { href: "/admin/rewards", label: "הטבות למימוש", icon: "🎉" },
   { href: "/admin/referrals", label: "חבר מביא חבר", icon: "🎁" },
   { href: "/admin/settings", label: "הגדרות אתר", icon: "⚙" },
 ];

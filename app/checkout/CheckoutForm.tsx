@@ -7,6 +7,8 @@ import { useCart, getReferral } from "@/lib/useCart";
 import { useSiteSettings } from "@/lib/site";
 import { useMember, awardPoints, logEvent } from "@/lib/member";
 import { formatPrice } from "@/lib/utils";
+import CouponBox from "@/components/CouponBox";
+import { consumeCoupon, type Coupon } from "@/lib/coupon";
 import type { DeliveryArea } from "@/lib/types";
 
 export default function CheckoutForm() {
@@ -21,6 +23,8 @@ export default function CheckoutForm() {
     if (member) setForm((f) => ({ ...f, name: f.name || member.display_name, phone: f.phone || member.phone }));
   }, [member]);
   const [busy, setBusy] = useState(false);
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
+  const [discount, setDiscount] = useState(0);
   const [err, setErr] = useState("");
 
   useEffect(() => {
@@ -30,7 +34,7 @@ export default function CheckoutForm() {
 
   const area = areas.find((a) => a.region === form.region);
   const fee = area?.fee ?? 0;
-  const total = subtotal + fee;
+  const total = Math.max(0, subtotal + fee - discount);
 
   const set = (k: string, v: string) => setForm({ ...form, [k]: v });
 
@@ -54,12 +58,15 @@ export default function CheckoutForm() {
       delivery_fee: fee,
       total,
       referral_code: getReferral(),
+      coupon_code: coupon?.code ?? null,
+      discount,
       member_id: member?.id ?? null,
     }).select("order_number").single();
 
     if (error) { setErr("שמירת ההזמנה נכשלה. נסו שוב או צרו קשר בוואטסאפ."); setBusy(false); return; }
 
     const num = data?.order_number;
+    if (coupon) await consumeCoupon(coupon.id, coupon.used_count);
 
     if (member) {
       await awardPoints(member.id, "order", `הזמנה #${num}`);
@@ -149,12 +156,21 @@ export default function CheckoutForm() {
             </div>
           ))}
         </div>
+        <div className="border-t border-white/10 pt-4">
+          <CouponBox subtotal={subtotal} memberLevel={member?.level} onApply={(c, d) => { setCoupon(c); setDiscount(d); }} />
+        </div>
+
         <div className="border-t border-white/10 pt-3 space-y-2 text-sm">
           <div className="flex justify-between"><span className="text-smoke">סכום ביניים</span><span>{formatPrice(subtotal)}</span></div>
           <div className="flex justify-between">
             <span className="text-smoke">משלוח</span>
             <span>{form.region ? (fee > 0 ? formatPrice(fee) : "חינם") : "—"}</span>
           </div>
+          {discount > 0 && (
+            <div className="flex justify-between text-gold">
+              <span>הנחת קופון</span><span>−{formatPrice(discount)}</span>
+            </div>
+          )}
           <div className="flex justify-between text-lg pt-2 border-t border-white/10">
             <span className="font-semibold">סה״כ</span>
             <span className="font-bold gold-text">{formatPrice(total)}</span>
