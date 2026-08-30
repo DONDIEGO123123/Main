@@ -6,6 +6,8 @@ import { useMember } from "@/lib/member";
 import { useSiteSettings } from "@/lib/site";
 import type { Product } from "@/lib/types";
 import ProductCard from "@/components/ProductCard";
+import Challenges from "@/components/Challenges";
+import Leaderboard from "@/components/Leaderboard";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +57,10 @@ export default function CommunityPage() {
           <span className="text-gold">←</span>
         </Link>
       )}
+
+      <Challenges />
+
+      <Leaderboard />
 
       {/* Levels */}
       {levels.length > 0 && (

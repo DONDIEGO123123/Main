@@ -13,6 +13,7 @@ import CheckoutUpsell from "@/components/CheckoutUpsell";
 import { consumeCoupon, type Coupon } from "@/lib/coupon";
 import { notifyOwner } from "@/lib/notify";
 import { markRecovered, saveAbandonedCart } from "@/lib/abandoned";
+import { getChannel } from "@/lib/channel";
 import type { DeliveryArea } from "@/lib/types";
 
 export default function CheckoutForm() {
@@ -70,6 +71,7 @@ export default function CheckoutForm() {
       coupon_code: coupon?.code ?? null,
       discount,
       member_id: member?.id ?? null,
+      channel: getChannel(),
     }).select("order_number").single();
 
     if (error) { setErr("שמירת ההזמנה נכשלה. נסו שוב או צרו קשר בוואטסאפ."); setBusy(false); return; }

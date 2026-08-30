@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { captureChannel } from "@/lib/channel";
 
 /** Counts a visit once per browser session + reports realtime presence. */
 export default function Analytics() {
@@ -11,6 +12,8 @@ export default function Analytics() {
   useEffect(() => {
     if (isAdmin) return;
     const supabase = createClient();
+
+    captureChannel();
 
     // --- capture referral code from the URL (?ref=CODE) ---
     try {

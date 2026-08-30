@@ -53,6 +53,20 @@ export default function JoinForm() {
     await logEvent(data.id, "joined", "הצטרפות לקהילה");
     await awardPoints(data.id, "registration");
 
+    // welcome coupon, if the shop configured one
+    const { data: cfg } = await supabase.from("settings").select("value").eq("key", "site").maybeSingle();
+    const gift = (cfg?.value ?? {}) as { welcome_gift?: number };
+    if (gift.welcome_gift && gift.welcome_gift > 0) {
+      const code = `WELCOME${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+      await supabase.from("coupons").insert({
+        code, kind: "percent", value: gift.welcome_gift, max_uses: 1,
+      });
+      await supabase.from("member_events").insert({
+        member_id: data.id, kind: "points",
+        label: `מתנת הצטרפות: קוד ${code} (${gift.welcome_gift}% הנחה)`,
+      });
+    }
+
     // reward the referrer
     if (referred_by) {
       const { data: ref } = await supabase.from("members").select("id").eq("referral_code", referred_by).maybeSingle();

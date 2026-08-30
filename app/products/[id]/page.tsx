@@ -33,5 +33,32 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const product = await getProduct(id);
   if (!product) notFound();
-  return <ProductDetail product={product} />;
+
+  // Structured data helps the product show up properly in Google results
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description ?? undefined,
+    image: product.image_url ? [product.image_url] : undefined,
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "ILS",
+      availability:
+        product.stock === 0
+          ? "https://schema.org/OutOfStock"
+          : "https://schema.org/InStock",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProductDetail product={product} />
+    </>
+  );
 }

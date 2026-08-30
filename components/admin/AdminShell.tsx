@@ -16,6 +16,8 @@ const nav = [
   { href: "/admin/faq", label: "שאלות נפוצות", icon: "?" },
   { href: "/admin/delivery", label: "אזורי משלוח", icon: "➤" },
   { href: "/admin/insights", label: "נתונים ותובנות", icon: "📊" },
+  { href: "/admin/channels", label: "מאיפה מגיעים", icon: "📡" },
+  { href: "/admin/stuck", label: "מוצרים תקועים", icon: "🐌" },
   { href: "/admin/messages", label: "הודעות ללקוח", icon: "📤" },
   { href: "/admin/reviews-request", label: "בקשת ביקורת", icon: "⭐" },
   { href: "/admin/notifications", label: "התראות טלגרם", icon: "🔔" },
@@ -33,6 +35,7 @@ const nav = [
   { href: "/admin/bundles", label: "חבילות מוצרים", icon: "📦" },
   { href: "/admin/coupons", label: "קופונים", icon: "🏷️" },
   { href: "/admin/rewards", label: "הטבות למימוש", icon: "🎉" },
+  { href: "/admin/challenges", label: "אתגרי קהילה", icon: "🎯" },
   { href: "/admin/referrals", label: "חבר מביא חבר", icon: "🎁" },
   { href: "/admin/settings", label: "הגדרות אתר", icon: "⚙" },
 ];

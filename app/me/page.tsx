@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/lib/member";
 import { useCart } from "@/lib/useCart";
 import { formatPrice } from "@/lib/utils";
+import Challenges from "@/components/Challenges";
 import type { Order } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -90,6 +91,8 @@ export default function MePage() {
         </div>
         <span className="text-gold">←</span>
       </Link>
+
+      <Challenges />
 
       {/* Referral */}
       <div className="glass p-6">

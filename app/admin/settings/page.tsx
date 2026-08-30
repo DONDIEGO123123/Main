@@ -24,6 +24,9 @@ type Site = {
   gift_threshold?: number;
   gift_label?: string;
   watermark?: string;
+  welcome_gift?: number;
+  exit_code?: string;
+  exit_label?: string;
   hero_video?: string;
   hero_video_title?: string;
 };
