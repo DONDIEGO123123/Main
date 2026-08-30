@@ -31,6 +31,15 @@ export default function AdminProducts() {
         },
         { key: "stock", label: "מלאי", type: "number" },
         { key: "is_featured", label: "להציג בדף הבית", type: "boolean" },
+        { key: "min_level", label: "מי יכול לראות", type: "select", options: [
+          { value: "all", label: "כולם" },
+          { value: "member", label: "חברי קהילה" },
+          { value: "silver", label: "Silver ומעלה" },
+          { value: "gold", label: "Gold ומעלה" },
+          { value: "platinum", label: "Platinum ומעלה" },
+          { value: "vip", label: "VIP בלבד" },
+        ] },
+        { key: "early_access_until", label: "גישה מוקדמת ל-VIP עד (תאריך)", type: "text" },
         { key: "is_active", label: "פעיל", type: "boolean" },
       ]}
     />

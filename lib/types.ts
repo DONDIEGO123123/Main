@@ -15,6 +15,10 @@ export type Product = {
   image_url: string | null;
   gallery: string[];
   videos?: string[] | null;
+  min_level?: string | null;
+  early_access_until?: string | null;
+  cost_price?: number;
+  badge?: string | null;
   category_id: string | null;
   is_featured: boolean;
   is_active: boolean;

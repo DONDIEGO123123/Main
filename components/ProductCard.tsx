@@ -4,6 +4,8 @@ import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import { useCart } from "@/lib/useCart";
 import { useLang } from "@/lib/i18n";
+import { useMember } from "@/lib/member";
+import { canAccess, inEarlyAccess } from "@/lib/wallet";
 import { openCart } from "@/components/CartDrawer";
 import Link from "next/link";
 import HoloMedia from "@/components/HoloMedia";
@@ -21,6 +23,10 @@ export default function ProductCard({
 }) {
   const { add } = useCart();
   const { t } = useLang();
+  const { member } = useMember();
+  const locked = !canAccess(product.min_level, member?.level)
+    || (inEarlyAccess(product.early_access_until) && !canAccess("vip", member?.level));
+
   const discount =
     product.compare_at_price && product.compare_at_price > product.price
       ? Math.round((1 - product.price / product.compare_at_price) * 100)
@@ -33,6 +39,16 @@ export default function ProductCard({
       className="glass group overflow-hidden hover:border-gold/30 hover:shadow-glow transition-all duration-500"
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-panel">
+        {locked && (
+          <div className="absolute inset-0 z-20 grid place-items-center bg-black/75 backdrop-blur-sm">
+            <div className="text-center px-4">
+              <p className="text-3xl">🔒</p>
+              <p className="text-gold text-sm font-semibold mt-2">
+                {inEarlyAccess(product.early_access_until) ? "גישה מוקדמת ל-VIP" : "בלעדי לחברי מועדון"}
+              </p>
+            </div>
+          </div>
+        )}
         <HoloMedia
           src={product.image_url}
           video={product.videos?.[0] ?? null}

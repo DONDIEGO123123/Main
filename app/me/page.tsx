@@ -8,6 +8,7 @@ import { useCart } from "@/lib/useCart";
 import { formatPrice } from "@/lib/utils";
 import Challenges from "@/components/Challenges";
 import ProfileStats from "@/components/ProfileStats";
+import MysteryBox from "@/components/MysteryBox";
 import type { Order } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -89,6 +90,17 @@ export default function MePage() {
         )}
         {cur?.perks && <p className="text-smoke text-xs mt-4">{cur.perks}</p>}
       </div>
+
+      <MysteryBox trigger="welcome" title="יש לך הפתעה" subtitle="מתנת הצטרפות — לחצו לפתיחה" />
+
+      <Link href="/wallet" className="glass p-5 flex items-center gap-4 hover:border-gold/40 transition">
+        <span className="text-2xl">💳</span>
+        <div className="flex-1">
+          <p className="font-semibold">הארנק שלי</p>
+          <p className="text-smoke text-sm">נקודות, קופונים והיסטוריה מלאה</p>
+        </div>
+        <span className="text-gold">←</span>
+      </Link>
 
       <Link href="/rewards" className="glass-gold p-5 flex items-center gap-4 hover:border-gold/40 transition">
         <span className="text-2xl">🎁</span>
