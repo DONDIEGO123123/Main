@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useMember } from "@/lib/member";
 import { openMystery, type MysteryResult } from "@/lib/wallet";
+import { useFlag } from "@/lib/flags";
 
 /**
  * Mystery reward (#12). The prize is drawn server-side from a weighted
@@ -10,10 +11,14 @@ import { openMystery, type MysteryResult } from "@/lib/wallet";
 export default function MysteryBox({
   trigger, title = "יש לך הפתעה", subtitle = "לחצו לפתיחה",
 }: { trigger: string; title?: string; subtitle?: string }) {
+  const enabled = useFlag("mystery");
   const { member, refresh } = useMember();
   const [result, setResult] = useState<MysteryResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [hidden, setHidden] = useState(false);
+
+
+  if (!enabled) return null;
 
   if (!member || hidden) return null;
 
@@ -26,7 +31,8 @@ export default function MysteryBox({
   };
 
   if (result?.ok) {
-    return (
+
+  return (
       <section className="glass-gold p-6 text-center">
         <p className="text-4xl mb-2">🎉</p>
         <p className="font-semibold">{result.label}</p>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useMember, awardPoints } from "@/lib/member";
 import type { Order } from "@/lib/types";
+import { useFlag } from "@/lib/flags";
 
 type Challenge = {
   id: string; title: string; description: string;
@@ -12,6 +13,7 @@ type Challenge = {
 
 /** Community challenges with real progress from orders, points and referrals. */
 export default function Challenges() {
+  const enabled = useFlag("challenges");
   const { member, refresh } = useMember();
   const [list, setList] = useState<Challenge[]>([]);
   const [progress, setProgress] = useState<Record<string, number>>({});
@@ -63,6 +65,8 @@ export default function Challenges() {
   }, [member?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!member || list.length === 0) return null;
+
+  if (!enabled) return null;
 
   return (
     <section className="glass p-6">

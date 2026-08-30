@@ -1,9 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useSiteSettings } from "@/lib/site";
+import { useFlag } from "@/lib/flags";
 
 /** Floating background-music toggle. Autoplays if the browser allows it. */
 export default function MusicPlayer() {
+  const enabled = useFlag("music");
   const { music_url } = useSiteSettings();
   const ref = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -31,9 +33,13 @@ export default function MusicPlayer() {
       ["pointerdown", "touchstart", "click", "keydown", "scroll"].forEach((e) =>
         window.addEventListener(e, kick, { once: false, passive: true })
       );
-      return cleanup;
+
+  return cleanup;
     });
   }, [music_url]);
+
+
+  if (!enabled) return null;
 
   if (!music_url) return null;
 

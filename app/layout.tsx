@@ -34,6 +34,15 @@ const body = Assistant({
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/apple-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "LUXE",
+  },
   metadataBase: new URL(siteUrl),
   title: { default: "LUXE — חנות יוקרה", template: "%s | LUXE" },
   description: "חוויית קנייה יוקרתית: מוצרי פרימיום, משלוחים מהירים בכל הארץ ושירות אישי.",

@@ -7,6 +7,7 @@ import { useMember } from "@/lib/member";
 import { useCart } from "@/lib/useCart";
 import { formatPrice } from "@/lib/utils";
 import Challenges from "@/components/Challenges";
+import QrCode from "@/components/QrCode";
 import ProfileStats from "@/components/ProfileStats";
 import MysteryBox from "@/components/MysteryBox";
 import type { Order } from "@/lib/types";
@@ -122,6 +123,12 @@ export default function MePage() {
         <div className="flex items-center gap-2 glass px-3 py-2.5 mb-3">
           <span className="text-gold font-mono text-sm truncate flex-1" dir="ltr">{link}</span>
         </div>
+        {link && (
+          <div className="text-center mb-4">
+            <QrCode value={link} size={150} />
+            <p className="text-smoke text-xs mt-2">הראו את הקוד לחבר לסריקה מהירה</p>
+          </div>
+        )}
         <button onClick={share} className="btn-gold w-full py-3">
           {copied ? "✓ הקישור הועתק" : "שיתוף הקישור שלי ←"}
         </button>

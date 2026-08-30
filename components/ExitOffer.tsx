@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/lib/useCart";
+import { useFlag } from "@/lib/flags";
 
 type Offer = { code: string; label: string };
 
@@ -10,6 +11,7 @@ type Offer = { code: string; label: string };
  * Uses a real coupon configured in admin — never a fake discount.
  */
 export default function ExitOffer() {
+  const enabled = useFlag("exit_offer");
   const { count } = useCart();
   const [offer, setOffer] = useState<Offer | null>(null);
   const [show, setShow] = useState(false);
@@ -39,7 +41,11 @@ export default function ExitOffer() {
 
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("visibilitychange", onHide);
-    return () => {
+
+
+  if (!enabled) return null;
+
+  return () => {
       document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("visibilitychange", onHide);
     };

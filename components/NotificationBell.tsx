@@ -5,11 +5,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/lib/member";
 import {
+import { useFlag } from "@/lib/flags";
   listNotifications, markAllRead, markRead, timeAgo, type Notification,
 } from "@/lib/notifications";
 
 /** Bell with unread badge and a slide-in panel. Members only. */
 export default function NotificationBell() {
+  const enabled = useFlag("notifications");
   const { member } = useMember();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<Notification[]>([]);
@@ -34,7 +36,11 @@ export default function NotificationBell() {
         () => load())
       .subscribe();
 
-    return () => { createClient().removeChannel(channel); };
+
+
+  if (!enabled) return null;
+
+  return () => { createClient().removeChannel(channel); };
   }, [member?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!member) return null;
