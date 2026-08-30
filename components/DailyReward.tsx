@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/lib/member";
 import { claimDaily, claimedToday, type DailyResult } from "@/lib/wallet";
+import { useFlag } from "@/lib/flags";
 
 type Day = { day_index: number; label: string; points: number; icon: string };
 
 /** Daily reward (#13). One claim per calendar day, enforced by the database. */
 export default function DailyReward() {
   const { member, refresh } = useMember();
+  const enabled = useFlag("daily_reward");
   const [days, setDays] = useState<Day[]>([]);
   const [claimed, setClaimed] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -21,7 +23,7 @@ export default function DailyReward() {
     claimedToday(member.id).then((c) => setClaimed(c));
   }, [member?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!member || days.length === 0) return null;
+  if (!enabled || !member || days.length === 0) return null;
 
   const streak = member.streak_days ?? 1;
   const todayIndex = ((Math.max(streak, 1) - 1) % 7) + 1;

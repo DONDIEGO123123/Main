@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/lib/member";
+import { useFlag } from "@/lib/flags";
 
 type Poll = {
   id: string; question: string; description: string;
@@ -11,6 +12,7 @@ type Poll = {
 /** Community voting (#23). One vote per member, enforced in the database. */
 export default function CommunityPoll() {
   const { member, refresh } = useMember();
+  const enabled = useFlag("polls");
   const [poll, setPoll] = useState<Poll | null>(null);
   const [counts, setCounts] = useState<number[]>([]);
   const [voted, setVoted] = useState<number | null>(null);
@@ -35,7 +37,7 @@ export default function CommunityPoll() {
 
   useEffect(() => { load(); }, [member?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!poll) return null;
+  if (!enabled || !poll) return null;
 
   const total = counts.reduce((a, b) => a + b, 0);
   const ended = poll.ends_at ? new Date(poll.ends_at).getTime() < Date.now() : false;

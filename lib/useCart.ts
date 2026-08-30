@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import type { CartItem, Product } from "@/lib/types";
+import { track } from "@/lib/events";
 
 const KEY = "luxe-cart";
 const EVT = "luxe-cart-change";
@@ -28,6 +29,7 @@ export function useCart() {
 
   const add = useCallback((p: Product, qty = 1) => {
     const items = read();
+    if (items.length === 0) track({ name: "cart_created", entityType: "product", entityId: p.id });
     const found = items.find((i) => i.product_id === p.id);
     if (found) found.qty += qty;
     else items.push({ product_id: p.id, name: p.name, price: p.price, image_url: p.image_url, qty });

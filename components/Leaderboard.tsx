@@ -2,12 +2,14 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/lib/member";
+import { useFlag } from "@/lib/flags";
 
 type Row = { id: string; display_name: string; points: number; level: string };
 
 /** Top point earners. Names only — no phone numbers or personal data. */
 export default function Leaderboard() {
   const { member } = useMember();
+  const enabled = useFlag("leaderboard");
   const [rows, setRows] = useState<Row[]>([]);
 
   useEffect(() => {
@@ -16,7 +18,7 @@ export default function Leaderboard() {
       .then(({ data }) => setRows((data as Row[]) ?? []));
   }, []);
 
-  if (rows.length < 3) return null;
+  if (!enabled || rows.length < 3) return null;
 
   const medal = (i: number) => (i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`);
 

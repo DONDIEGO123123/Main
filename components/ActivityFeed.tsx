@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { timeAgo } from "@/lib/notifications";
+import { useFlag } from "@/lib/flags";
 
 type Item = {
   id: number; kind: string; title: string; body: string;
@@ -15,6 +16,7 @@ type Item = {
  * rewards, announcements. No personal data about any member.
  */
 export default function ActivityFeed({ limit = 8 }: { limit?: number }) {
+  const enabled = useFlag("feed");
   const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function ActivityFeed({ limit = 8 }: { limit?: number }) {
       .then(({ data }) => setItems((data as Item[]) ?? []));
   }, [limit]);
 
-  if (items.length === 0) return null;
+  if (!enabled || items.length === 0) return null;
 
   return (
     <section className="glass p-6">

@@ -34,6 +34,10 @@ export default function CheckoutForm() {
   useEffect(() => {
     saveAbandonedCart(items, subtotal, form.phone || undefined, member?.id);
   }, [items, subtotal, form.phone, member?.id]);
+
+  useEffect(() => {
+    if (items.length > 0) track({ name: "checkout_started", memberId: member?.id });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const [busy, setBusy] = useState(false);
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [discount, setDiscount] = useState(0);
