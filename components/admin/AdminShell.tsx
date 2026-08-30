@@ -28,6 +28,7 @@ const nav = [
   { href: "/admin/members", label: "חברי קהילה", icon: "👥" },
   { href: "/admin/crm", label: "ניהול לקוחות", icon: "🤝" },
   { href: "/admin/levels", label: "רמות ונקודות", icon: "⭐" },
+  { href: "/admin/gallery", label: "גלריית לקוחות", icon: "📸" },
   { href: "/admin/product-faq", label: "שאלות למוצר", icon: "❓" },
   { href: "/admin/bundles", label: "חבילות מוצרים", icon: "📦" },
   { href: "/admin/coupons", label: "קופונים", icon: "🏷️" },

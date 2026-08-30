@@ -16,6 +16,8 @@ import ReviewForm from "@/components/ReviewForm";
 import VipClub from "@/components/VipClub";
 import JoinBanner from "@/components/JoinBanner";
 import HomeRails from "@/components/HomeRails";
+import CustomerGallery from "@/components/CustomerGallery";
+import HeroVideo from "@/components/HeroVideo";
 import RealStats from "@/components/RealStats";
 import type { SiteSettings } from "@/lib/types";
 
@@ -102,7 +104,11 @@ export default async function HomePage() {
         </section>
       )}
 
+      <HeroVideo />
+
       <HomeRails />
+
+      <CustomerGallery />
 
       {/* Wizard */}
       {site.wizard_enabled !== false && (products.data?.length ?? 0) > 0 && (

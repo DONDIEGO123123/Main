@@ -23,6 +23,9 @@ type Site = {
   why_title?: string;
   gift_threshold?: number;
   gift_label?: string;
+  watermark?: string;
+  hero_video?: string;
+  hero_video_title?: string;
 };
 
 export default function AdminSettings() {
@@ -97,6 +100,7 @@ export default function AdminSettings() {
         <p className="font-semibold">קישורי יצירת קשר</p>
         <p className="text-smoke text-sm">הקישורים לכפתורים הצפים, לדף צור קשר ולכפתור ההזמנה במוצרים. נכנס לתוקף מיד.</p>
         {input("name", "שם האתר", "LUXE")}
+        {input("watermark", "סימן מים על תמונות (ריק = ללא)", "LUXE")}
         {input("tagline", "סלוגן", "יוקרה. איכות. שירות.")}
         {input("telegram", "קישור טלגרם", "https://t.me/username")}
         {input("whatsapp", "קישור וואטסאפ", "https://wa.me/972501234567")}

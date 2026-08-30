@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { processImage } from "@/lib/image-tools";
+import { useSiteSettings } from "@/lib/site";
 
 export default function ImageUpload({
   value,
@@ -11,14 +13,16 @@ export default function ImageUpload({
   onChange: (url: string | null) => void;
 }) {
   const [busy, setBusy] = useState(false);
+  const site = useSiteSettings() as { watermark?: string };
   const [err, setErr] = useState("");
 
   const upload = async (file: File) => {
     setBusy(true);
     setErr("");
     const supabase = createClient();
-    const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;
-    const { error } = await supabase.storage.from("media").upload(path, file, { upsert: false });
+    const processed = await processImage(file, { watermark: site.watermark || null });
+    const path = `${Date.now()}-${processed.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;
+    const { error } = await supabase.storage.from("media").upload(path, processed, { upsert: false });
     if (error) {
       setErr("ההעלאה נכשלה. ודאו שקובץ התמונה קטן מ-5MB ונסו שוב.");
     } else {
