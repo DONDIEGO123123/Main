@@ -16,6 +16,7 @@ const links = [
   { href: "/reviews", label: "ביקורות" },
   { href: "/faq", label: "שאלות" },
   { href: "/contact", label: "צור קשר" },
+  { href: "/community", label: "קהילה" },
   { href: "/orders", label: "מעקב הזמנה" },
 ];
 

@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { useMember, logEvent } from "@/lib/member";
+import { useMember } from "@/lib/member";
+import { useCart } from "@/lib/useCart";
 import { formatPrice } from "@/lib/utils";
 import type { Order } from "@/lib/types";
 
@@ -15,6 +16,7 @@ type Ev = { id: number; kind: string; label: string; points_delta: number; creat
 export default function MePage() {
   const router = useRouter();
   const { member, ready, refresh, logout } = useMember();
+  const { add } = useCart();
   const [levels, setLevels] = useState<Level[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [events, setEvents] = useState<Ev[]>([]);
@@ -116,7 +118,16 @@ export default function MePage() {
                     {new Date(o.created_at).toLocaleDateString("he-IL")} · {(o.items ?? []).length} פריטים
                   </p>
                 </div>
-                <span className="text-gold font-bold">{formatPrice(Number(o.total))}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-gold font-bold">{formatPrice(Number(o.total))}</span>
+                  <button
+                    onClick={() => (o.items ?? []).forEach((i) => add(
+                      { id: i.product_id, name: i.name, price: i.price, image_url: i.image_url } as never, i.qty
+                    ))}
+                    className="btn-ghost px-3 py-1.5 text-xs shrink-0">
+                    🔄 הזמן שוב
+                  </button>
+                </div>
               </div>
             ))}
           </div>

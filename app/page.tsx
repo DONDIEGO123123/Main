@@ -8,7 +8,6 @@ import DeliveryMap from "@/components/DeliveryMap";
 import ContactForm from "@/components/ContactForm";
 import ContactChannels from "@/components/ContactChannels";
 import FadeIn from "@/components/FadeIn";
-import Counter from "@/components/Counter";
 import SectionTitle from "@/components/SectionTitle";
 import DealOfDay from "@/components/DealOfDay";
 import ChooseWizard from "@/components/ChooseWizard";
@@ -16,6 +15,8 @@ import SocialProof from "@/components/SocialProof";
 import ReviewForm from "@/components/ReviewForm";
 import VipClub from "@/components/VipClub";
 import JoinBanner from "@/components/JoinBanner";
+import HomeRails from "@/components/HomeRails";
+import RealStats from "@/components/RealStats";
 import type { SiteSettings } from "@/lib/types";
 
 export const revalidate = 60;
@@ -59,14 +60,7 @@ export default async function HomePage() {
     <>
       {show("hero") && <HeroSlider banners={banners.data ?? []} />}
 
-      {/* Stats strip */}
-      <section className="mx-auto max-w-7xl px-4 -mt-10 relative z-10">
-        <FadeIn className="glass-gold grid grid-cols-3 divide-x divide-x-reverse divide-white/10 text-center py-8">
-          <div><Counter to={1200} suffix="+" /><p className="text-smoke text-sm mt-1">לקוחות מרוצים</p></div>
-          <div><Counter to={98} suffix="%" /><p className="text-smoke text-sm mt-1">ממליצים עלינו</p></div>
-          <div><Counter to={24} /><p className="text-smoke text-sm mt-1">שעות למשלוח</p></div>
-        </FadeIn>
-      </section>
+      <RealStats />
 
       <JoinBanner />
 
@@ -107,6 +101,8 @@ export default async function HomePage() {
           <div className="text-center mt-10"><Link href="/products" className="btn-ghost">לכל המוצרים</Link></div>
         </section>
       )}
+
+      <HomeRails />
 
       {/* Wizard */}
       {site.wizard_enabled !== false && (products.data?.length ?? 0) > 0 && (

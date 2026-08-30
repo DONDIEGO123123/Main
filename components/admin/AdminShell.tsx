@@ -14,6 +14,7 @@ const nav = [
   { href: "/admin/reviews", label: "ביקורות", icon: "★" },
   { href: "/admin/faq", label: "שאלות נפוצות", icon: "?" },
   { href: "/admin/delivery", label: "אזורי משלוח", icon: "➤" },
+  { href: "/admin/insights", label: "נתונים ותובנות", icon: "📊" },
   { href: "/admin/members", label: "חברי קהילה", icon: "👥" },
   { href: "/admin/levels", label: "רמות ונקודות", icon: "⭐" },
   { href: "/admin/product-faq", label: "שאלות למוצר", icon: "❓" },
