@@ -10,6 +10,7 @@ import { trackProductView } from "@/lib/track-view";
 import { formatPrice } from "@/lib/utils";
 import Hologram from "@/components/Hologram";
 import ProductCard from "@/components/ProductCard";
+import ShareButton from "@/components/ShareButton";
 import type { Product } from "@/lib/types";
 
 type Faq = { id: string; question: string; answer: string };
@@ -136,6 +137,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <button onClick={addNow} className="btn-gold flex-1 py-3.5">
                   {added ? "✓ נוסף לעגלה" : "הוספה לעגלה 🛒"}
                 </button>
+                <ShareButton product={product} />
                 <button onClick={() => toggle(product.id)} aria-label="שמירה למועדפים"
                   className={`h-[52px] w-[52px] rounded-xl glass grid place-items-center text-xl transition ${
                     saved ? "text-red-400" : "text-smoke"

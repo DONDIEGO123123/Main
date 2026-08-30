@@ -10,6 +10,7 @@ import Analytics from "@/components/Analytics";
 import MusicPlayer from "@/components/MusicPlayer";
 import CartButton from "@/components/CartButton";
 import MemberButton from "@/components/MemberButton";
+import InstallPrompt from "@/components/InstallPrompt";
 import CartDrawer from "@/components/CartDrawer";
 import ReferralCapture from "@/components/ReferralCapture";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MusicPlayer />
         <CartButton />
         <MemberButton />
+        <InstallPrompt />
         <CartDrawer />
         <ReferralCapture />
         {gaId && (

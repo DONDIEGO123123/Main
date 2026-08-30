@@ -21,6 +21,8 @@ type Site = {
   wizard_enabled?: boolean;
   referral_enabled?: boolean; referral_reward?: string;
   why_title?: string;
+  gift_threshold?: number;
+  gift_label?: string;
 };
 
 export default function AdminSettings() {

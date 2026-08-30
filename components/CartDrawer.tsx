@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/lib/useCart";
 import { formatPrice } from "@/lib/utils";
 import CrossSell from "@/components/CrossSell";
+import CartProgress from "@/components/CartProgress";
 
 const OPEN_EVT = "luxe-cart-open";
 /** Open the cart drawer from anywhere (e.g. after "add to cart"). */
@@ -71,6 +72,8 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
                     </div>
                   ))}
                 </div>
+
+                <CartProgress subtotal={subtotal} />
 
                 <CrossSell />
 

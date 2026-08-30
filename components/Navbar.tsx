@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import SmartSearch from "@/components/SmartSearch";
+import LangSwitch from "@/components/LangSwitch";
 import { createClient } from "@/lib/supabase/client";
 import type { Category } from "@/lib/types";
-import CartButton from "@/components/CartButton";
 
 const links = [
   { href: "/", label: "בית" },
@@ -106,7 +106,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
-          <CartButton />
+          <LangSwitch />
           <button
             aria-label="חיפוש"
             onClick={() => setSearchOpen((v) => !v)}
