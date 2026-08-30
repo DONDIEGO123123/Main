@@ -149,6 +149,9 @@ export default function AdminOrders() {
                         target="_blank" rel="noopener noreferrer" className="btn-ghost px-4 py-2 text-sm">
                         וואטסאפ ללקוח
                       </a>
+                      <a href={`/admin/orders/${o.id}`} className="btn-ghost px-4 py-2 text-sm">
+                        🖨 תעודת משלוח
+                      </a>
                       <button onClick={() => del(o.id)}
                         className="mr-auto text-red-400 text-sm hover:underline">מחיקה</button>
                     </div>

@@ -11,6 +11,7 @@ export default function AdminInsights() {
   const [kpi, setKpi] = useState({
     visits: 0, orders: 0, revenue: 0, members: 0, conversion: 0, avgOrder: 0,
   });
+  const [period, setPeriod] = useState({ curR: 0, curN: 0, prevR: 0, prevN: 0 });
   const [topViewed, setTopViewed] = useState<Row[]>([]);
   const [topSold, setTopSold] = useState<Row[]>([]);
 
@@ -37,6 +38,18 @@ export default function AdminInsights() {
         conversion: visits > 0 ? Math.round((orders.length / visits) * 1000) / 10 : 0,
         avgOrder: orders.length > 0 ? Math.round(revenue / orders.length) : 0,
       });
+
+      // this month vs the previous one
+      const now = new Date();
+      const startThis = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+      const startPrev = new Date(now.getFullYear(), now.getMonth() - 1, 1).getTime();
+      let curR = 0, curN = 0, prevR = 0, prevN = 0;
+      orders.forEach((o) => {
+        const ts = new Date(o.created_at).getTime();
+        if (ts >= startThis) { curR += Number(o.total); curN += 1; }
+        else if (ts >= startPrev) { prevR += Number(o.total); prevN += 1; }
+      });
+      setPeriod({ curR, curN, prevR, prevN });
 
       const names = new Map(((productsQ.data ?? []) as Product[]).map((p) => [p.id, p.name]));
 
@@ -106,6 +119,34 @@ export default function AdminInsights() {
             <p className="text-smoke text-sm mt-1">{c.l}</p>
           </div>
         ))}
+      </div>
+
+      <div className="glass p-5">
+        <h2 className="font-semibold mb-4">📅 החודש מול הקודם</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            { l: "מכירות", cur: period.curR, prev: period.prevR, money: true },
+            { l: "הזמנות", cur: period.curN, prev: period.prevN, money: false },
+          ].map((m) => {
+            const diff = m.prev > 0 ? Math.round(((m.cur - m.prev) / m.prev) * 100) : null;
+            return (
+              <div key={m.l} className="text-center">
+                <p className="text-smoke text-sm">{m.l}</p>
+                <p className="font-display text-2xl font-black gold-text tabular-nums mt-1">
+                  {m.money ? formatPrice(m.cur) : m.cur}
+                </p>
+                <p className="text-smoke text-xs mt-1">
+                  קודם: {m.money ? formatPrice(m.prev) : m.prev}
+                </p>
+                {diff !== null && (
+                  <p className={`text-sm mt-1 ${diff >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                    {diff >= 0 ? "▲" : "▼"} {Math.abs(diff)}%
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-4">

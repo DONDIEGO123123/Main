@@ -11,7 +11,7 @@ import MusicPlayer from "@/components/MusicPlayer";
 import CartButton from "@/components/CartButton";
 import MemberButton from "@/components/MemberButton";
 import InstallPrompt from "@/components/InstallPrompt";
-import CartDrawer from "@/components/CartDrawer";
+import MaintenanceGate from "@/components/MaintenanceGate";
 import ReferralCapture from "@/components/ReferralCapture";
 import LoadingScreen from "@/components/LoadingScreen";
 import Script from "next/script";
@@ -61,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Gold hairline frame — the site's signature */}
         <div aria-hidden className="pointer-events-none fixed inset-2 md:inset-3 z-[60] rounded-2xl border border-gold/20" />
         <Navbar />
-        <main className="min-h-screen">{children}</main>
+        <main className="min-h-screen"><MaintenanceGate>{children}</MaintenanceGate></main>
         <Footer />
         <FloatingButtons />
         <BackToTop />
@@ -71,7 +71,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartButton />
         <MemberButton />
         <InstallPrompt />
-        <CartDrawer />
         <ReferralCapture />
         {gaId && (
           <>
