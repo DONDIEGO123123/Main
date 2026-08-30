@@ -9,6 +9,7 @@ import ProductCard from "@/components/ProductCard";
 import Challenges from "@/components/Challenges";
 import Leaderboard from "@/components/Leaderboard";
 import ActivityFeed from "@/components/ActivityFeed";
+import CommunityPoll from "@/components/CommunityPoll";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +59,8 @@ export default function CommunityPage() {
           <span className="text-gold">←</span>
         </Link>
       )}
+
+      <CommunityPoll />
 
       <ActivityFeed />
 

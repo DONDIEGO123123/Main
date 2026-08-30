@@ -85,7 +85,10 @@ export default function AdminMembers() {
                       <p className="sm:col-span-2"><span className="text-smoke">הופנה על ידי: </span>
                         <span className="text-gold font-mono" dir="ltr">{m.referred_by}</span></p>
                     )}
-                    <p className="sm:col-span-2">
+                    <p className="sm:col-span-2 flex gap-2">
+                      <a href={`/admin/customers/${m.id}`} className="btn-gold inline-block px-4 py-2 text-sm mt-1">
+                        תיק לקוח מלא
+                      </a>
                       <a href={`https://wa.me/${m.phone.replace(/\D/g, "").replace(/^0/, "972")}`}
                         target="_blank" rel="noopener noreferrer" className="btn-ghost inline-block px-4 py-2 text-sm mt-1">
                         וואטסאפ לחבר
