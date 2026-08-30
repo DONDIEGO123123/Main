@@ -1,9 +1,13 @@
 "use client";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useMember } from "@/lib/member";
+import { addReputation } from "@/lib/progress";
+import { track } from "@/lib/events";
 
 /** Public review submission — saved unapproved, awaits admin approval. */
 export default function ReviewForm() {
+  const { member } = useMember();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ author: "", rating: 5, content: "" });
   const [done, setDone] = useState(false);
@@ -12,7 +16,14 @@ export default function ReviewForm() {
   const submit = async () => {
     if (!form.author.trim() || !form.content.trim()) return;
     setBusy(true);
-    await createClient().from("reviews").insert({ ...form, is_approved: false });
+    const { data: review } = await createClient().from("reviews")
+      .insert({ ...form, is_approved: false, phone: member?.phone ?? null, member_id: member?.id ?? null })
+      .select("id").single();
+
+    if (member) {
+      await addReputation(member.id, "review", `review-${review?.id ?? Date.now()}`);
+      track({ name: "review_created", memberId: member.id, entityType: "review", entityId: review?.id });
+    }
     setBusy(false); setDone(true);
   };
 

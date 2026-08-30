@@ -7,6 +7,7 @@ import { useMember } from "@/lib/member";
 import { useCart } from "@/lib/useCart";
 import { formatPrice } from "@/lib/utils";
 import Challenges from "@/components/Challenges";
+import ProfileStats from "@/components/ProfileStats";
 import type { Order } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -80,6 +81,12 @@ export default function MePage() {
             </p>
           </div>
         )}
+        {(member.reputation ?? 0) > 0 && (
+          <p className="text-smoke text-xs mt-3">
+            מוניטין: <span className="text-gold">{member.reputation}</span>
+            {member.rep_level && ` · ${member.rep_level}`}
+          </p>
+        )}
         {cur?.perks && <p className="text-smoke text-xs mt-4">{cur.perks}</p>}
       </div>
 
@@ -91,6 +98,8 @@ export default function MePage() {
         </div>
         <span className="text-gold">←</span>
       </Link>
+
+      <ProfileStats />
 
       <Challenges />
 

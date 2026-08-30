@@ -10,6 +10,13 @@ export type Member = {
   level: string;
   referral_code: string;
   referred_by: string | null;
+  avatar_url?: string | null;
+  bio?: string;
+  reputation?: number;
+  rep_level?: string;
+  streak_days?: number;
+  streak_best?: number;
+  goal_level?: string | null;
   created_at: string;
 };
 

@@ -37,6 +37,10 @@ const nav = [
   { href: "/admin/coupons", label: "קופונים", icon: "🏷️" },
   { href: "/admin/rewards", label: "הטבות למימוש", icon: "🎉" },
   { href: "/admin/challenges", label: "אתגרי קהילה", icon: "🎯" },
+  { href: "/admin/achievements", label: "הישגים", icon: "🏆" },
+  { href: "/admin/missions", label: "משימות", icon: "📋" },
+  { href: "/admin/badges", label: "תגי חברים", icon: "🎖️" },
+  { href: "/admin/milestones", label: "יעדי רכישה", icon: "🏅" },
   { href: "/admin/referrals", label: "חבר מביא חבר", icon: "🎁" },
   { href: "/admin/settings", label: "הגדרות אתר", icon: "⚙" },
 ];
