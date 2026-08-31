@@ -11,7 +11,7 @@ export default function MemberButton() {
     <Link
       href={member ? "/me" : "/join"}
       aria-label={member ? "האזור האישי" : "הצטרפות לקהילה"}
-      className="fixed bottom-5 left-5 z-50 h-12 px-4 rounded-full glass-gold text-gold flex items-center gap-2 shadow-glow"
+      className="fixed bottom-5 left-5 z-50 h-12 min-w-[44px] min-w-[44px] px-4 rounded-full glass-gold text-gold flex items-center gap-2 shadow-glow"
     >
       {member ? (
         <>

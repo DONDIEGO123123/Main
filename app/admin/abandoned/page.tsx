@@ -24,7 +24,7 @@ export default function AdminAbandoned() {
     setCarts(carts.filter((c) => c.id !== id));
   };
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
 
   const withPhone = carts.filter((c) => c.phone);
   const potential = carts.reduce((n, c) => n + Number(c.total), 0);

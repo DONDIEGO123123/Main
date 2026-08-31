@@ -27,7 +27,7 @@ export default function AdminMaintenance() {
     setTimeout(() => setSaved(false), 1800);
   };
 
-  if (!loaded) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (!loaded) return <div className="skeleton h-64 rounded-2xl" />;
 
   return (
     <div className="space-y-6 max-w-2xl">

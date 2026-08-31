@@ -85,7 +85,7 @@ export default function AdminSettings() {
     setTimeout(() => setSaved(false), 2500);
   };
 
-  if (!loaded) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (!loaded) return <div className="skeleton h-64 rounded-2xl" />;
 
   const input = (key: keyof Site, label: string, placeholder: string) => (
     <div>

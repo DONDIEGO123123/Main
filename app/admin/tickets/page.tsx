@@ -34,7 +34,7 @@ export default function AdminTickets() {
       .update({ status, updated_at: new Date().toISOString() }).eq("id", id);
   };
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
 
   const shown = filter === "all" ? tickets : tickets.filter((t) => t.status === filter);
   const openCount = tickets.filter((t) => t.status !== "resolved").length;

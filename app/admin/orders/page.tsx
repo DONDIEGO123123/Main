@@ -69,7 +69,7 @@ export default function AdminOrders() {
   const revenue = orders.filter((o) => o.status !== "cancelled").reduce((n, o) => n + Number(o.total), 0);
   const newCount = orders.filter((o) => o.status === "new").length;
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
 
   return (
     <div className="space-y-6">

@@ -19,7 +19,13 @@ export default async function ReviewsPage() {
     <div className="mx-auto max-w-7xl px-4 pt-14">
       <SectionTitle eyebrow="מפי הלקוחות" title="ביקורות אמיתיות" />
       {!data?.length ? (
-        <div className="glass p-14 text-center text-smoke">עוד לא פורסמו ביקורות. תהיו הראשונים לשתף.</div>
+        <div className="glass-thin p-16 text-center">
+          <p className="text-5xl text-gold/25 mb-4" aria-hidden>&rdquo;</p>
+          <p className="font-display text-xl">עוד אין ביקורות</p>
+          <p className="text-smoke text-sm mt-2 max-w-sm mx-auto">
+            הזמנתם כבר? נשמח לשמוע איך הייתה החוויה.
+          </p>
+        </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {data.map((r, i) => (

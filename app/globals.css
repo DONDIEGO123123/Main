@@ -143,6 +143,35 @@ body::before {
   }
 }
 
+/* ---- loading placeholders ------------------------------------------- */
+/* A slow sheen instead of a blink — it reads as the card arriving. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--glass-thin);
+  border: 1px solid var(--hairline);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 70%
+  );
+  background-size: 220% 100%;
+  animation: skeletonSweep 1.8s var(--ease) infinite;
+}
+@keyframes skeletonSweep {
+  0%   { background-position: 180% 0; }
+  100% { background-position: -80% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after { animation: none; }
+}
+
 /* keyboard focus is always visible, never only on hover */
 :focus-visible {
   outline: 2px solid rgba(212, 175, 55, 0.7);

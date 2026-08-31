@@ -29,7 +29,7 @@ export default function AdminMembers() {
     setEvents((data as Ev[]) ?? []);
   };
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
 
   const totalPoints = members.reduce((n, m) => n + m.points, 0);
   const vips = members.filter((m) => m.level !== "member").length;

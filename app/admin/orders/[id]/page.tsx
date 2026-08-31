@@ -21,7 +21,7 @@ export default function PackingSlip() {
       .then(({ data }) => setShop((data?.value ?? {}) as { name?: string; whatsapp?: string }));
   }, [id]);
 
-  if (!order) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (!order) return <div className="skeleton h-64 rounded-2xl" />;
 
   const items = (order.items ?? []) as CartItem[];
 

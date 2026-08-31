@@ -64,7 +64,7 @@ export default function ProductDetail({ product }: { product: Product }) {
       <main className="container mx-auto px-4 py-10 max-w-6xl pb-28 lg:pb-10">
         <Link href="/products" className="text-smoke text-sm hover:text-gold transition">← לכל המוצרים</Link>
 
-        <div className="grid lg:grid-cols-2 gap-8 mt-6">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 mt-8">
           {/* Gallery */}
           <div>
             <div
@@ -102,8 +102,12 @@ export default function ProductDetail({ product }: { product: Product }) {
               <div className="flex gap-2 mt-3 overflow-x-auto">
                 {gallery.map((g, i) => (
                   <button key={i} onClick={() => setActive(i)}
-                    className={`h-16 w-16 rounded-lg overflow-hidden shrink-0 border-2 transition ${
-                      i === active ? "border-gold" : "border-transparent opacity-60"
+                    aria-label={`תמונה ${i + 1}`}
+                    aria-current={i === active}
+                    className={`h-16 w-16 rounded-xl overflow-hidden shrink-0 border transition-all duration-base ease-luxe ${
+                      i === active
+                        ? "border-gold/70 shadow-glow-soft"
+                        : "border-white/10 opacity-55 hover:opacity-90 hover:border-white/25"
                     }`}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={g} alt="" className="h-full w-full object-cover" />
@@ -122,11 +126,16 @@ export default function ProductDetail({ product }: { product: Product }) {
           {/* Info */}
           <div className="space-y-5">
             <div>
-              <h1 className="font-display text-3xl font-bold">{product.name}</h1>
-              <div className="flex items-baseline gap-3 mt-3">
-                <span className="font-display text-3xl font-black gold-text">{formatPrice(product.price)}</span>
+              <h1 className="font-display text-display-md font-bold leading-tight">{product.name}</h1>
+              <div className="rule mt-6 w-20" aria-hidden />
+              <div className="flex items-baseline gap-3 mt-6">
+                <span className="font-display text-4xl md:text-5xl font-black metal-text">
+                  {formatPrice(product.price)}
+                </span>
                 {off > 0 && (
-                  <span className="text-smoke line-through">{formatPrice(product.compare_at_price!)}</span>
+                  <span className="text-smoke-dim line-through text-lg">
+                    {formatPrice(product.compare_at_price!)}
+                  </span>
                 )}
               </div>
             </div>
@@ -138,7 +147,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             )}
 
             {product.description && (
-              <p className="text-smoke leading-relaxed whitespace-pre-line">{product.description}</p>
+              <p className="text-white/70 leading-loose whitespace-pre-line max-w-prose">{product.description}</p>
             )}
 
             {soldOut ? (
@@ -182,10 +191,20 @@ export default function ProductDetail({ product }: { product: Product }) {
             )}
 
             {/* Shipping / policy */}
-            <div className="glass p-5 space-y-2.5 text-sm">
-              <p className="flex gap-2"><span>🚚</span><span className="text-smoke">משלוח לכל הארץ — דמי המשלוח מחושבים לפי אזור בעמוד התשלום</span></p>
-              <p className="flex gap-2"><span>💎</span><span className="text-smoke">כל המוצרים נבדקים לפני המשלוח</span></p>
-              <p className="flex gap-2"><span>💬</span><span className="text-smoke">שירות אישי בוואטסאפ ובטלגרם</span></p>
+            <div className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+              {[
+                ["🚚", "משלוח לכל הארץ", "דמי המשלוח מחושבים לפי אזור בעמוד התשלום"],
+                ["💎", "נבדק לפני המשלוח", "כל פריט עובר בדיקה לפני שהוא יוצא"],
+                ["💬", "שירות אישי", "מענה בוואטסאפ ובטלגרם, לפני ואחרי הרכישה"],
+              ].map(([icon, title, body]) => (
+                <div key={title} className="flex gap-4 py-4">
+                  <span className="text-lg shrink-0">{icon}</span>
+                  <div>
+                    <p className="text-sm font-medium">{title}</p>
+                    <p className="text-sm text-smoke mt-0.5">{body}</p>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* Product FAQ */}

@@ -33,7 +33,7 @@ export default function AdminNotifications() {
     setTestMsg(j.ok ? "✓ נשלח! בדוק בטלגרם" : "❌ השליחה נכשלה — בדוק את הפרטים");
   };
 
-  if (!loaded) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (!loaded) return <div className="skeleton h-64 rounded-2xl" />;
 
   return (
     <div className="space-y-6 max-w-2xl">

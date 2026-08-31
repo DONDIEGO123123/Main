@@ -74,7 +74,7 @@ export default function AdminSegments() {
     })();
   }, []);
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
 
   const counts = (Object.keys(SEGMENT_LABELS) as Segment[])
     .map((k) => ({ key: k, ...SEGMENT_LABELS[k], count: rows.filter((r) => r.segment === k).length }));

@@ -21,7 +21,7 @@ export default function AdminControl() {
       });
   }, []);
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
 
   return (
     <div className="space-y-6">

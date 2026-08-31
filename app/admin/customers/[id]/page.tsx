@@ -45,7 +45,7 @@ export default function Customer360Page() {
     })();
   }, [id]);
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
   if (!p) return <div className="glass p-12 text-center text-smoke">הלקוח לא נמצא</div>;
 
   const badge = healthBadge(p.health);

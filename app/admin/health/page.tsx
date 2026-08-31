@@ -74,7 +74,7 @@ export default function AdminHealth() {
 
   useEffect(() => { run(); }, []);
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
 
   const icon = (s: Check["status"]) => (s === "ok" ? "🟢" : s === "warn" ? "🟡" : "🔴");
   const errors = checks.filter((c) => c.status === "error").length;

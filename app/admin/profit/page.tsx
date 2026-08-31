@@ -34,7 +34,7 @@ export default function AdminProfit() {
     setTimeout(() => setSaved(""), 1500);
   };
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
 
   const costs = new Map(products.map((p) => [p.id, Number(p.cost_price ?? 0)]));
   let revenue = 0, cost = 0;

@@ -18,7 +18,7 @@ export default function CartButton() {
     <>
       {count > 0 && (
         <button onClick={() => setOpen(true)} aria-label="פתיחת עגלה"
-          className="fixed bottom-5 left-20 z-50 h-12 px-4 rounded-full glass-gold text-gold flex items-center gap-2 shadow-glow">
+          className="fixed bottom-5 left-20 z-50 h-12 min-w-[44px] px-4 rounded-full glass-gold text-gold flex items-center gap-2 shadow-glow">
           <span className="text-lg">🛒</span>
           <span className="font-bold tabular-nums">{count}</span>
         </button>

@@ -41,7 +41,7 @@ export default function AdminTrash() {
     load();
   };
 
-  if (loading) return <div className="h-64 rounded-2xl bg-white/5 animate-pulse" />;
+  if (loading) return <div className="skeleton h-64 rounded-2xl" />;
 
   const nameOf = (r: Row) =>
     (r.payload.name as string) || (r.payload.order_number ? `#${r.payload.order_number}` : r.record_id.slice(0, 8));
