@@ -5,9 +5,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/lib/member";
 import {
-import { useFlag } from "@/lib/flags";
   listNotifications, markAllRead, markRead, timeAgo, type Notification,
 } from "@/lib/notifications";
+import { useFlag } from "@/lib/flags";
 
 /** Bell with unread badge and a slide-in panel. Members only. */
 export default function NotificationBell() {

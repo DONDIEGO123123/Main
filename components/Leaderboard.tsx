@@ -9,7 +9,7 @@ type Row = { id: string; display_name: string; points: number; level: string };
 /** Top point earners. Names only — no phone numbers or personal data. */
 export default function Leaderboard() {
   const { member } = useMember();
-  const enabled = useFlag("leaderboard");
+  const enabled = useFlag("challenges");
   const [rows, setRows] = useState<Row[]>([]);
 
   useEffect(() => {
