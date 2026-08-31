@@ -31,7 +31,7 @@ export default function ProductRail({
         {items.slice(0, 4).map((p, i) => (
           <div key={p.id} className="relative">
             {badge?.(i) && (
-              <span className="absolute -top-2 right-2 z-10 glass-gold text-gold text-xs px-3 py-1 rounded-full">
+              <span className="absolute -top-2 right-2 z-30 glass-gold text-gold text-xs px-3 py-1 rounded-full">
                 {badge(i)}
               </span>
             )}

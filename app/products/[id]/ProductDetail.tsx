@@ -12,6 +12,7 @@ import Hologram from "@/components/Hologram";
 import ProductCard from "@/components/ProductCard";
 import ShareButton from "@/components/ShareButton";
 import HoloMedia from "@/components/HoloMedia";
+import { useHolographic } from "@/lib/useHolographic";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import type { Product } from "@/lib/types";
 
@@ -21,6 +22,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const { add } = useCart();
   const { ids, toggle } = useWishlist();
   const site = useSiteSettings();
+  const tilt = useHolographic<HTMLDivElement>();
   const [gallery, setGallery] = useState<string[]>([]);
   const [active, setActive] = useState(0);
   const [holo, setHolo] = useState(false);
@@ -65,20 +67,31 @@ export default function ProductDetail({ product }: { product: Product }) {
         <div className="grid lg:grid-cols-2 gap-8 mt-6">
           {/* Gallery */}
           <div>
-            <div className="glass overflow-hidden aspect-square relative">
-              <HoloMedia
-                src={gallery[active] ?? null}
-                video={active === 0 ? (product.videos?.[0] ?? null) : null}
-                alt={product.name}
-                className="h-full w-full"
-              />
+            <div
+              ref={tilt.ref}
+              {...tilt.handlers}
+              className="holo-card glass overflow-hidden aspect-square relative"
+            >
+              <div className="holo-card__media absolute inset-0">
+                <div className="holo-card__layer absolute inset-0">
+                  <HoloMedia
+                    src={gallery[active] ?? null}
+                    video={active === 0 ? (product.videos?.[0] ?? null) : null}
+                    alt={product.name}
+                    className="h-full w-full"
+                  />
+                </div>
+                <span className="holo-card__light" aria-hidden />
+                <span className="holo-card__iri" aria-hidden />
+                <span className="holo-card__spec" aria-hidden />
+              </div>
               {off > 0 && (
-                <span className="absolute top-4 right-4 bg-gold text-ink text-sm font-bold px-3 py-1 rounded-full">
+                <span className="absolute top-4 right-4 z-20 bg-gold text-ink text-sm font-bold px-3 py-1 rounded-full">
                   −{off}%
                 </span>
               )}
               {product.badge && (
-                <span className="absolute top-4 left-4 glass-gold text-gold text-xs px-3 py-1 rounded-full">
+                <span className="absolute top-4 left-4 z-20 glass-gold text-gold text-xs px-3 py-1 rounded-full">
                   {product.badge}
                 </span>
               )}
