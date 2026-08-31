@@ -2,87 +2,175 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===================================================================
+   LUXE — design foundation
+   Warm gold needs cold ambient light to read as metal. That tension
+   is the whole palette; everything else stays quiet.
+   =================================================================== */
+
 :root {
   color-scheme: dark;
+
+  /* elevation surfaces */
+  --surface-0: #08080A;
+  --surface-1: #0E0E11;
+  --surface-2: #17171B;
+  --surface-3: #1E1E23;
+
+  /* glass, in three weights rather than one */
+  --glass-thin:  rgba(255, 255, 255, 0.03);
+  --glass-base:  rgba(255, 255, 255, 0.05);
+  --glass-thick: rgba(255, 255, 255, 0.08);
+
+  --hairline: rgba(255, 255, 255, 0.08);
+  --hairline-bright: rgba(255, 255, 255, 0.14);
+
+  /* motion — one easing across the site */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-quick: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 520ms;
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   @apply bg-ink text-white font-body antialiased;
+  /* cold ambient above, warm bounce below — like a lit studio */
   background-image:
-    radial-gradient(1200px 600px at 80% -10%, rgba(212, 175, 55, 0.08), transparent 60%),
-    radial-gradient(900px 500px at 10% 110%, rgba(212, 175, 55, 0.05), transparent 60%);
+    radial-gradient(1100px 700px at 78% -12%, rgba(78, 100, 128, 0.10), transparent 62%),
+    radial-gradient(900px 560px at 12% 108%, rgba(212, 175, 55, 0.07), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* a barely-there grain stops large dark areas from banding */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @layer components {
+  /* ---- glass, in weights ------------------------------------------ */
   .glass {
-    @apply bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl;
+    background: var(--glass-base);
+    border: 1px solid var(--hairline);
+    @apply backdrop-blur-xl rounded-2xl;
+  }
+  .glass-thin {
+    background: var(--glass-thin);
+    border: 1px solid var(--hairline);
+    @apply backdrop-blur-md rounded-2xl;
+  }
+  .glass-raised {
+    background: var(--glass-thick);
+    border: 1px solid var(--hairline-bright);
+    @apply backdrop-blur-2xl rounded-2xl shadow-e3;
   }
   .glass-gold {
-    @apply glass border-gold/25 shadow-glow;
+    @apply glass shadow-glow;
+    border-color: rgba(212, 175, 55, 0.25);
   }
+
+  /* ---- type -------------------------------------------------------- */
   .gold-text {
     @apply bg-gold-text bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer;
   }
-  .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-l from-gold-soft via-gold to-gold-dim text-ink font-semibold px-7 py-3 transition-all duration-300 hover:shadow-glow hover:scale-[1.03] active:scale-[0.98];
-  }
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-gold/40 text-gold px-7 py-3 transition-all duration-300 hover:bg-gold/10 hover:shadow-glow;
+  .metal-text {
+    @apply bg-metal bg-clip-text text-transparent bg-[length:200%_auto];
   }
   .section-title {
-    @apply font-display text-3xl md:text-5xl font-bold tracking-tight;
+    @apply font-display text-display-md font-bold;
   }
+  .hero-title {
+    @apply font-display text-display-xl font-bold;
+  }
+  .muted { @apply text-smoke; }
+
+  /* ---- buttons ----------------------------------------------------- */
+  .btn-gold {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full
+           bg-gradient-to-l from-gold-soft via-gold to-gold-dim text-ink font-semibold
+           px-7 py-3 overflow-hidden;
+    transition: box-shadow var(--dur-base) var(--ease),
+                transform var(--dur-quick) var(--ease);
+  }
+  .btn-gold::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.45) 50%, transparent 60%);
+    background-size: 250% 100%;
+    background-position: 200% 0;
+    transition: background-position var(--dur-slow) var(--ease);
+  }
+  .btn-gold:hover { @apply shadow-glow; }
+  .btn-gold:hover::after { background-position: -120% 0; }
+  .btn-gold:active { transform: scale(0.985); }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full
+           border border-gold/35 text-gold px-7 py-3;
+    transition: background-color var(--dur-base) var(--ease),
+                border-color var(--dur-base) var(--ease),
+                box-shadow var(--dur-base) var(--ease);
+  }
+  .btn-ghost:hover {
+    @apply bg-gold/10 border-gold/60 shadow-glow-soft;
+  }
+
+  /* ---- inputs ------------------------------------------------------ */
   .input {
-    @apply w-full rounded-xl bg-white/[0.05] border border-white/10 px-4 py-3 text-white placeholder:text-smoke focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/40 transition;
+    background: var(--glass-base);
+    border: 1px solid var(--hairline);
+    @apply w-full rounded-xl px-4 py-3 text-white placeholder:text-smoke-dim
+           focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/30;
+    transition: border-color var(--dur-quick) var(--ease),
+                background-color var(--dur-quick) var(--ease);
   }
+
+  /* ---- a hairline that carries light ------------------------------- */
+  .rule {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--hairline-bright), transparent);
+  }
+}
+
+/* keyboard focus is always visible, never only on hover */
+:focus-visible {
+  outline: 2px solid rgba(212, 175, 55, 0.7);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 ::selection {
-  background: rgba(212, 175, 55, 0.35);
+  background: rgba(212, 175, 55, 0.32);
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #08080A; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(#8c7326, #d4af37);
+  background: linear-gradient(#5C4B18, #8C7326);
   border-radius: 8px;
 }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(#8C7326, #D4AF37); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-  html { scroll-behavior: auto; }
+  body::before { display: none; }
 }
-
-/* ---- Hologram ---- */
-.holo-img img { filter: saturate(1.1) contrast(1.05); }
-.holo-sweep {
-  background: linear-gradient(115deg,
-    transparent 20%, rgba(120,220,255,0.18) 32%, rgba(212,175,55,0.28) 45%,
-    rgba(255,120,220,0.14) 58%, transparent 72%);
-  background-size: 250% 250%;
-  animation: holoSweep 3.6s linear infinite;
-  mix-blend-mode: screen;
-}
-.holo-lines {
-  background: repeating-linear-gradient(to bottom,
-    rgba(212,175,55,0.10) 0px, rgba(212,175,55,0.10) 1px,
-    transparent 1px, transparent 4px);
-  animation: holoLines 7s linear infinite;
-  mix-blend-mode: screen;
-}
-@keyframes holoSweep { 0% { background-position: 120% 0; } 100% { background-position: -130% 0; } }
-@keyframes holoLines { 0% { background-position: 0 0; } 100% { background-position: 0 120px; } }
 
 /* ---- Holographic product card --------------------------------------- */
 /* All motion is driven by CSS variables written from useHolographic.
@@ -283,4 +371,106 @@ body {
 @media (hover: none) {
   .holo-card__scan { display: none; }
   .holo-card__iri { filter: blur(16px); }
+}
+
+
+/* ---- Hero variant: the main product image IS the hologram ------------ */
+/* Same layer stack as a card, but the effect never fully rests — it
+   breathes on its own and intensifies as the angle changes. */
+
+.holo-hero { --idle: 0.30; }
+
+/* light stays lit even without a pointer */
+.holo-hero .holo-card__light {
+  opacity: calc(var(--idle) + var(--active) * 0.55);
+  background: radial-gradient(
+    circle 45% at var(--mx) var(--my),
+    rgba(255, 255, 255, 0.28),
+    rgba(255, 255, 255, 0.08) 38%,
+    transparent 68%
+  );
+}
+
+/* iridescence is the signature — visible at rest, richer on interaction */
+.holo-hero .holo-card__iri {
+  opacity: calc(var(--idle) * 0.75 + var(--active) * 0.55);
+  filter: blur(18px) saturate(1.3);
+  animation: holoHeroDrift 14s ease-in-out infinite;
+}
+
+/* the specular streak sweeps slowly on its own */
+.holo-hero .holo-card__spec {
+  opacity: calc(var(--idle) * 0.55 + var(--active) * 0.5);
+  animation: holoHeroSweep 7s ease-in-out infinite;
+}
+
+.holo-hero .holo-card__scan {
+  opacity: calc(var(--idle) * 0.4 + var(--active) * 0.45);
+  animation: holoCardLines 9s linear infinite;
+}
+
+/* a gentle aurora behind the product, so it reads as projected light */
+.holo-hero::before {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 40% at 30% 25%, rgba(212, 175, 55, 0.22), transparent 65%),
+    radial-gradient(ellipse 45% 35% at 72% 70%, rgba(120, 200, 255, 0.16), transparent 65%);
+  filter: blur(28px);
+  opacity: calc(0.65 + var(--active) * 0.35);
+  animation: holoHeroAurora 12s ease-in-out infinite alternate;
+}
+
+/* base rings under the product, like a projection plate */
+.holo-hero::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: 62%;
+  height: 8%;
+  z-index: 1;
+  pointer-events: none;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.35), transparent 70%);
+  filter: blur(10px);
+  opacity: calc(0.5 + var(--active) * 0.5);
+}
+
+/* the product floats a touch, always */
+.holo-hero .holo-card__layer {
+  animation: holoHeroFloat 6s ease-in-out infinite;
+}
+
+@keyframes holoHeroDrift {
+  0%, 100% { --hue: -14deg; }
+  50%      { --hue: 14deg; }
+}
+@keyframes holoHeroSweep {
+  0%   { background-position: 190% 0; }
+  60%  { background-position: -90% 0; }
+  100% { background-position: -90% 0; }
+}
+@keyframes holoHeroAurora {
+  0%   { transform: translate3d(-2%, -1%, 0) scale(1); }
+  100% { transform: translate3d(2%, 2%, 0) scale(1.06); }
+}
+@keyframes holoHeroFloat {
+  0%, 100% { transform: translate3d(var(--px), calc(var(--py) - 4px), 0) scale(1.04); }
+  50%      { transform: translate3d(var(--px), calc(var(--py) + 4px), 0) scale(1.06); }
+}
+
+/* stillness for anyone who asked for it */
+@media (prefers-reduced-motion: reduce) {
+  .holo-hero::before,
+  .holo-hero::after,
+  .holo-hero .holo-card__iri,
+  .holo-hero .holo-card__spec,
+  .holo-hero .holo-card__scan,
+  .holo-hero .holo-card__layer {
+    animation: none !important;
+  }
 }

@@ -56,12 +56,23 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ${
-        scrolled ? "bg-ink/80 backdrop-blur-xl border-b border-white/5" : "bg-transparent"
+      className={`sticky top-0 z-50 transition-all duration-slow ease-luxe ${
+        scrolled ? "pt-2 md:pt-3" : "pt-0"
       }`}
     >
-      <nav className="mx-auto max-w-7xl px-4 h-16 md:h-20 flex items-center justify-between gap-4">
-        <Link href="/" className="font-display text-2xl md:text-3xl font-black gold-text">
+      <nav
+        className={`mx-auto flex items-center justify-between gap-4 transition-all duration-slow ease-luxe ${
+          scrolled
+            ? "max-w-6xl mx-4 md:mx-auto h-14 md:h-16 px-4 md:px-6 rounded-full glass-raised"
+            : "max-w-7xl px-4 h-16 md:h-20 border-b border-transparent"
+        }`}
+      >
+        <Link
+          href="/"
+          className={`font-display font-black metal-text tracking-[0.14em] transition-all duration-slow ease-luxe ${
+            scrolled ? "text-xl md:text-2xl" : "text-2xl md:text-3xl"
+          }`}
+        >
           {site.name || "LUXE"}
         </Link>
 
@@ -76,11 +87,20 @@ export default function Navbar() {
             >
               <Link
                 href={l.href}
-                className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                  pathname === l.href ? "text-gold" : "text-white/80 hover:text-gold"
+                className={`group/link relative px-3.5 py-2 text-sm transition-colors duration-base ease-luxe ${
+                  pathname === l.href ? "text-gold" : "text-white/75 hover:text-white"
                 }`}
               >
                 {l.k ? t(l.k) : l.label}
+                <span
+                  aria-hidden
+                  className={`absolute inset-x-3.5 -bottom-0.5 h-px origin-right scale-x-0
+                              bg-gradient-to-l from-transparent via-gold to-transparent
+                              transition-transform duration-base ease-luxe
+                              group-hover/link:scale-x-100 ${
+                                pathname === l.href ? "scale-x-100" : ""
+                              }`}
+                />
               </Link>
               {l.mega && (
                 <AnimatePresence>
@@ -91,8 +111,9 @@ export default function Navbar() {
                       exit={{ opacity: 0, y: 8 }}
                       className="absolute top-full right-0 pt-3 w-72"
                     >
-                      <div className="glass-gold p-4 grid gap-1">
-                        <p className="text-xs text-smoke px-3 pb-2 tracking-widest">קטגוריות</p>
+                      <div className="glass-raised p-4 grid gap-1">
+                        <p className="text-xs text-smoke px-3 pb-2">קטגוריות</p>
+                        <div className="rule mb-1" aria-hidden />
                         {cats.map((c) => (
                           <Link
                             key={c.id}
@@ -117,14 +138,14 @@ export default function Navbar() {
           <button
             aria-label="חיפוש"
             onClick={() => setSearchOpen((v) => !v)}
-            className="h-10 w-10 grid place-items-center rounded-full border border-white/10 hover:border-gold/50 hover:text-gold transition"
+            className="h-10 w-10 grid place-items-center rounded-full border border-white/10 text-white/80 transition-colors duration-base ease-luxe hover:border-gold/50 hover:text-gold"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           </button>
           <button
             aria-label="תפריט"
             onClick={() => setOpen((v) => !v)}
-            className="lg:hidden h-10 w-10 grid place-items-center rounded-full border border-white/10"
+            className="lg:hidden h-10 w-10 grid place-items-center rounded-full border border-white/10 transition-colors duration-base ease-luxe hover:border-gold/50"
           >
             <div className="space-y-1.5">
               <span className={`block h-0.5 w-5 bg-gold transition ${open ? "rotate-45 translate-y-2" : ""}`} />

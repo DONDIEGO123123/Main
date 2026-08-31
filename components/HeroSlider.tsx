@@ -31,64 +31,110 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
   const s = slides[i];
 
   return (
-    <section className="relative min-h-[88vh] flex items-center overflow-hidden">
-      {/* Animated aurora background */}
+    <section className="relative min-h-[92vh] flex items-end overflow-hidden">
+      {/* Ambient stage: cold key light above, warm bounce below */}
       <div aria-hidden className="absolute inset-0">
         <motion.div
-          className="absolute -top-40 right-[-10%] h-[36rem] w-[36rem] rounded-full bg-gold/15 blur-[120px]"
-          animate={{ x: [0, -60, 0], y: [0, 40, 0] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-48 right-[-12%] h-[40rem] w-[40rem] rounded-full bg-steel-glow/20 blur-[140px]"
+          animate={{ x: [0, -50, 0], y: [0, 36, 0] }}
+          transition={{ duration: 24, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-[-20%] left-[-10%] h-[28rem] w-[28rem] rounded-full bg-gold/10 blur-[120px]"
-          animate={{ x: [0, 60, 0], y: [0, -40, 0] }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-[-25%] left-[-12%] h-[32rem] w-[32rem] rounded-full bg-gold/12 blur-[140px]"
+          animate={{ x: [0, 50, 0], y: [0, -32, 0] }}
+          transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
         />
+
         {s.image_url && (
-          <Image src={s.image_url} alt="" fill priority className="object-cover opacity-25" sizes="100vw" />
+          <>
+            <Image
+              src={s.image_url}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover opacity-40 scale-105"
+            />
+            {/* the image is the hero — the scrim only protects the type */}
+            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/15" />
+            <div className="absolute inset-0 bg-gradient-to-l from-ink/70 via-transparent to-transparent" />
+          </>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/70" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 py-24 w-full">
+      <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-32 w-full">
         <AnimatePresence mode="wait">
           <motion.div
             key={s.id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-2xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-3xl"
           >
-            <p className="text-gold tracking-[0.35em] text-sm font-semibold mb-5">PREMIUM COLLECTION</p>
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-black leading-[1.1]">
-              <span className="gold-text">{s.headline}</span>
-            </h1>
-            <p className="mt-6 text-lg text-smoke leading-relaxed max-w-xl">{s.subheadline}</p>
-            <div className="mt-9 flex flex-wrap gap-4">
+            {/* one orchestrated entrance, staggered by line */}
+            <motion.h1
+              initial={{ opacity: 0, y: 26 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="hero-title"
+            >
+              <span className="metal-text">{s.headline}</span>
+            </motion.h1>
+
+            {s.subheadline && (
+              <motion.p
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-7 text-lg md:text-xl text-white/70 leading-relaxed max-w-xl"
+              >
+                {s.subheadline}
+              </motion.p>
+            )}
+
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-10 flex flex-wrap items-center gap-4"
+            >
               <Link href={s.cta_url || "/products"} className="btn-gold">
                 {s.cta_label || "לצפייה בקולקציה"}
               </Link>
               <Link href="/contact" className="btn-ghost">דברו איתנו</Link>
-            </div>
+            </motion.div>
           </motion.div>
         </AnimatePresence>
 
         {slides.length > 1 && (
-          <div className="absolute bottom-8 right-4 flex gap-2">
+          <div className="mt-14 flex items-center gap-3">
             {slides.map((_, idx) => (
               <button
                 key={idx}
                 aria-label={`שקופית ${idx + 1}`}
+                aria-current={idx === i}
                 onClick={() => setI(idx)}
-                className={`h-1.5 rounded-full transition-all ${
-                  idx === i ? "w-8 bg-gold" : "w-3 bg-white/20"
-                }`}
-              />
+                className="group py-2"
+              >
+                <span
+                  className={`block h-px transition-all duration-slow ease-luxe ${
+                    idx === i
+                      ? "w-14 bg-gold"
+                      : "w-7 bg-white/25 group-hover:bg-white/50"
+                  }`}
+                />
+              </button>
             ))}
           </div>
         )}
       </div>
+
+      {/* the seam into the catalogue, softened */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink to-transparent"
+      />
     </section>
   );
 }

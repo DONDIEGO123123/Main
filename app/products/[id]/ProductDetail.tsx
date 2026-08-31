@@ -70,7 +70,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             <div
               ref={tilt.ref}
               {...tilt.handlers}
-              className="holo-card glass overflow-hidden aspect-square relative"
+              className="holo-card holo-hero glass overflow-hidden aspect-square relative"
             >
               <div className="holo-card__media absolute inset-0">
                 <div className="holo-card__layer absolute inset-0">
@@ -84,6 +84,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <span className="holo-card__light" aria-hidden />
                 <span className="holo-card__iri" aria-hidden />
                 <span className="holo-card__spec" aria-hidden />
+                <span className="holo-card__scan" aria-hidden />
               </div>
               {off > 0 && (
                 <span className="absolute top-4 right-4 z-20 bg-gold text-ink text-sm font-bold px-3 py-1 rounded-full">
@@ -113,7 +114,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
             {gallery.length > 0 && (
               <button onClick={() => setHolo(true)} className="btn-ghost w-full mt-3 py-2.5 text-sm">
-                ✦ תצוגת הולוגרמה
+                ⤢ הגדלה למסך מלא
               </button>
             )}
           </div>
