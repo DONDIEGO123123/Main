@@ -148,7 +148,7 @@ export default function ProductsExplorer({
           ))}
           {(maxPrice !== null || tags.length > 0) && (
             <button onClick={() => { setMaxPrice(null); setTags([]); setPage(1); }}
-              className="px-3 py-1.5 rounded-full text-sm text-smoke hover:text-gold transition">
+              className="px-3 py-1.5 rounded-full text-sm text-smoke hover:text-gold transition-colors duration-base ease-luxe">
               נקה סינון
             </button>
           )}

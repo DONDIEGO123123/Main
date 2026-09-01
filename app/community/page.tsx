@@ -50,7 +50,7 @@ export default function CommunityPage() {
           <Link href="/join" className="btn-gold inline-block mt-5 px-8 py-3">הצטרפות חינם ←</Link>
         </div>
       ) : (
-        <Link href="/me" className="glass-gold p-6 flex items-center gap-4 hover:border-gold/40 transition">
+        <Link href="/me" className="glass-gold p-6 flex items-center gap-4 hover:border-gold/40 transition-colors duration-base ease-luxe">
           <span className="text-3xl">💎</span>
           <div className="flex-1">
             <p className="font-semibold">{member.display_name}</p>
@@ -120,7 +120,7 @@ export default function CommunityPage() {
       <section className="grid sm:grid-cols-2 gap-3">
         {site.telegram && (
           <a href={site.telegram} target="_blank" rel="noopener noreferrer"
-            className="glass p-5 flex items-center gap-3 hover:border-gold/40 transition">
+            className="glass p-5 flex items-center gap-3 hover:border-gold/40 transition-colors duration-base ease-luxe">
             <span className="text-2xl">📢</span>
             <div className="flex-1">
               <p className="font-semibold text-sm">ערוץ הטלגרם</p>
@@ -130,7 +130,7 @@ export default function CommunityPage() {
         )}
         {site.whatsapp && (
           <a href={site.whatsapp} target="_blank" rel="noopener noreferrer"
-            className="glass p-5 flex items-center gap-3 hover:border-gold/40 transition">
+            className="glass p-5 flex items-center gap-3 hover:border-gold/40 transition-colors duration-base ease-luxe">
             <span className="text-2xl">💬</span>
             <div className="flex-1">
               <p className="font-semibold text-sm">וואטסאפ</p>

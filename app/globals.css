@@ -223,13 +223,14 @@ body::before {
     rotateY(var(--ry))
     translateZ(0);
   transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
 }
 
-/* lift on interaction, without a bounce */
+/* GPU layers are promoted only during interaction — a page of cards
+   should not hold twenty composited layers at rest. */
 .holo-card:hover,
 .holo-card:focus-within {
   transition-duration: 120ms;
+  will-change: transform;
 }
 
 .holo-card__media {
@@ -322,6 +323,9 @@ body::before {
 .holo-card__layer {
   transform: translate3d(var(--px), var(--py), 0) scale(1.06);
   transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.holo-card:hover .holo-card__layer,
+.holo-card:focus-within .holo-card__layer {
   will-change: transform;
 }
 
@@ -398,8 +402,10 @@ body::before {
 
 /* Coarse pointers get a lighter stack — protects scroll performance */
 @media (hover: none) {
+  /* coarse pointers get a lighter stack so scrolling stays at 60fps */
   .holo-card__scan { display: none; }
-  .holo-card__iri { filter: blur(16px); }
+  .holo-card__iri { filter: none; opacity: calc(var(--active) * 0.4); }
+  .holo-card__spec { display: none; }
 }
 
 

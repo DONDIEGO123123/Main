@@ -12,7 +12,7 @@ export default function JoinBanner() {
   if (member) {
     return (
       <section className="mx-auto max-w-7xl px-4 mt-20">
-        <Link href="/me" className="glass-gold p-6 flex items-center gap-4 hover:border-gold/40 transition">
+        <Link href="/me" className="glass-gold p-6 flex items-center gap-4 hover:border-gold/40 transition-colors duration-base ease-luxe">
           <span className="text-3xl">💎</span>
           <div className="flex-1 min-w-0">
             <p className="font-semibold truncate">שלום {member.display_name}</p>

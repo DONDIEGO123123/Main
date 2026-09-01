@@ -129,7 +129,7 @@ export default function ProductCard({
     >
       <div className="p-4">
         <Link href={`/products/${product.id}`} className="block">
-          <h3 className="font-semibold truncate hover:text-gold transition">{product.name}</h3>
+          <h3 className="font-semibold truncate hover:text-gold transition-colors duration-base ease-luxe">{product.name}</h3>
         </Link>
         <div className="mt-1 flex items-center gap-2">
           <span className="text-gold font-bold">{formatPrice(product.price)}</span>

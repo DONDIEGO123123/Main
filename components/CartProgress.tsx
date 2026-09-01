@@ -30,7 +30,7 @@ export default function CartProgress({ subtotal }: { subtotal: number }) {
       <p className="text-sm mb-2">
         {done ? `🎉 ${gift.label} — נפתח!` : `🎁 עוד ${formatPrice(left)} ל${gift.label}`}
       </p>
-      <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
         <div className={`h-full transition-all duration-700 ${done ? "bg-emerald-400" : "bg-gold"}`}
           style={{ width: `${pct}%` }} />
       </div>

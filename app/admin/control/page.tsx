@@ -67,7 +67,7 @@ export default function AdminControl() {
                 </span>
               </div>
               <div className="h-3 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full bg-gold transition-all duration-700"
+                <div className="h-full bg-metal transition-all duration-slow ease-luxe"
                   style={{ width: `${Math.max(2, s.pct)}%` }} />
               </div>
             </div>

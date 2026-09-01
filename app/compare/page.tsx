@@ -40,7 +40,7 @@ export default function ComparePage() {
     <main className="container mx-auto px-4 py-12 max-w-5xl">
       <div className="flex items-center gap-3 mb-6">
         <h1 className="font-display text-2xl font-bold gold-text flex-1">⚖️ השוואת מוצרים</h1>
-        <button onClick={clear} className="text-smoke text-sm hover:text-gold transition">ניקוי</button>
+        <button onClick={clear} className="text-smoke text-sm hover:text-gold transition-colors duration-base ease-luxe">ניקוי</button>
       </div>
 
       {/* horizontal scroll keeps this usable on a phone */}

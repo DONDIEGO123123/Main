@@ -62,7 +62,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   return (
     <>
       <main className="container mx-auto px-4 py-10 max-w-6xl pb-28 lg:pb-10">
-        <Link href="/products" className="text-smoke text-sm hover:text-gold transition">← לכל המוצרים</Link>
+        <Link href="/products" className="text-smoke text-sm hover:text-gold transition-colors duration-base ease-luxe">← לכל המוצרים</Link>
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 mt-8">
           {/* Gallery */}
@@ -180,7 +180,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
             {site.whatsapp && (
               <a href={site.whatsapp} target="_blank" rel="noopener noreferrer"
-                className="glass p-4 flex items-center gap-3 hover:border-gold/40 transition">
+                className="glass p-4 flex items-center gap-3 hover:border-gold/40 transition-colors duration-base ease-luxe">
                 <span className="text-2xl">💬</span>
                 <div className="flex-1">
                   <p className="font-semibold text-sm">צריך עזרה לבחור?</p>

@@ -97,7 +97,7 @@ export default function AdminInsights() {
                   <span className="truncate">{r.name}</span>
                   <span className="text-gold tabular-nums shrink-0">{r.count}</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
                   <div className="h-full bg-gold" style={{ width: `${(r.count / max) * 100}%` }} />
                 </div>
               </div>

@@ -80,7 +80,7 @@ export default function NotificationBell() {
               <div className="flex items-center gap-2 p-5 border-b border-white/10">
                 <h2 className="font-display text-xl font-bold gold-text flex-1">התראות</h2>
                 {unread > 0 && (
-                  <button onClick={clearAll} className="text-smoke text-xs hover:text-gold transition">
+                  <button onClick={clearAll} className="text-smoke text-xs hover:text-gold transition-colors duration-base ease-luxe">
                     סמן הכל כנקרא
                   </button>
                 )}

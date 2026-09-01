@@ -24,6 +24,7 @@ type Site = {
   gift_threshold?: number;
   gift_label?: string;
   watermark?: string;
+  how_to_title?: string;
   welcome_gift?: number;
   exit_code?: string;
   exit_label?: string;
@@ -104,6 +105,7 @@ export default function AdminSettings() {
         <p className="text-smoke text-sm">הקישורים לכפתורים הצפים, לדף צור קשר ולכפתור ההזמנה במוצרים. נכנס לתוקף מיד.</p>
         {input("name", "שם האתר", "LUXE")}
         {input("watermark", "סימן מים על תמונות (ריק = ללא)", "LUXE")}
+        {input("how_to_title", "כותרת מדריך ההזמנה", "איך מזמינים?")}
         {input("tagline", "סלוגן", "יוקרה. איכות. שירות.")}
         {input("telegram", "קישור טלגרם", "https://t.me/username")}
         {input("whatsapp", "קישור וואטסאפ", "https://wa.me/972501234567")}

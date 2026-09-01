@@ -87,7 +87,7 @@ export default function Challenges() {
                 </span>
               </div>
               {c.description && <p className="text-smoke text-xs mb-1.5">{c.description}</p>}
-              <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
                 <div className={`h-full transition-all duration-700 ${finished ? "bg-emerald-400" : "bg-gold"}`}
                   style={{ width: `${pct}%` }} />
               </div>

@@ -118,7 +118,7 @@ export default function Navbar() {
                           <Link
                             key={c.id}
                             href={`/products?category=${c.slug}`}
-                            className="px-3 py-2 rounded-lg text-sm hover:bg-gold/10 hover:text-gold transition"
+                            className="px-3 py-2 rounded-lg text-sm hover:bg-gold/10 hover:text-gold transition-colors duration-base ease-luxe"
                           >
                             {c.name}
                           </Link>

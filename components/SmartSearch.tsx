@@ -82,7 +82,7 @@ export default function SmartSearch({ open, onClose }: { open: boolean; onClose:
             <div className="mt-4 space-y-2 max-h-[60vh] overflow-y-auto">
               {results.map((p) => (
                 <Link key={p.id} href={`/products/${p.id}`} onClick={onClose}
-                  className="flex gap-3 glass p-3 hover:border-gold/40 transition">
+                  className="flex gap-3 glass p-3 hover:border-gold/40 transition-colors duration-base ease-luxe">
                   <div className="h-14 w-14 rounded-lg overflow-hidden bg-black/30 shrink-0">
                     {p.image_url ? (
                       /* eslint-disable-next-line @next/next/no-img-element */

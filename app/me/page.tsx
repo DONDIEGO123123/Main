@@ -75,8 +75,8 @@ export default function MePage() {
 
         {next && (
           <div className="mt-5">
-            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-              <div className="h-full bg-gold transition-all duration-700" style={{ width: `${progress}%` }} />
+            <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
+              <div className="h-full bg-metal transition-all duration-slow ease-luxe" style={{ width: `${progress}%` }} />
             </div>
             <p className="text-smoke text-xs mt-2">
               עוד {next.min_points - member.points} נקודות ל־{next.name}
@@ -94,7 +94,7 @@ export default function MePage() {
 
       <MysteryBox trigger="welcome" title="יש לך הפתעה" subtitle="מתנת הצטרפות — לחצו לפתיחה" />
 
-      <Link href="/wallet" className="glass p-5 flex items-center gap-4 hover:border-gold/40 transition">
+      <Link href="/wallet" className="glass p-5 flex items-center gap-4 hover:border-gold/40 transition-colors duration-base ease-luxe">
         <span className="text-2xl">💳</span>
         <div className="flex-1">
           <p className="font-semibold">הארנק שלי</p>
@@ -103,7 +103,7 @@ export default function MePage() {
         <span className="text-gold">←</span>
       </Link>
 
-      <Link href="/rewards" className="glass-gold p-5 flex items-center gap-4 hover:border-gold/40 transition">
+      <Link href="/rewards" className="glass-gold p-5 flex items-center gap-4 hover:border-gold/40 transition-colors duration-base ease-luxe">
         <span className="text-2xl">🎁</span>
         <div className="flex-1">
           <p className="font-semibold">מרכז ההטבות</p>

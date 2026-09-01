@@ -30,7 +30,7 @@ export default function RecentlyViewed({ excludeId }: { excludeId?: string }) {
       <div className="flex gap-3 overflow-x-auto pb-2">
         {items.map((p) => (
           <Link key={p.id} href={`/products/${p.id}`}
-            className="shrink-0 w-32 glass overflow-hidden hover:border-gold/40 transition">
+            className="shrink-0 w-32 glass overflow-hidden hover:border-gold/40 transition-colors duration-base ease-luxe">
             <div className="aspect-square bg-black/30">
               {p.image_url ? (
                 /* eslint-disable-next-line @next/next/no-img-element */

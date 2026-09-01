@@ -62,7 +62,7 @@ export default function Customer360Page() {
 
   return (
     <div className="space-y-6">
-      <a href="/admin/members" className="text-smoke text-sm hover:text-gold transition">← לרשימת החברים</a>
+      <a href="/admin/members" className="text-smoke text-sm hover:text-gold transition-colors duration-base ease-luxe">← לרשימת החברים</a>
 
       {/* Header */}
       <div className="glass-gold p-6">
@@ -118,7 +118,7 @@ export default function Customer360Page() {
             <div className="space-y-2">
               {orders.map((o) => (
                 <a key={o.id} href={`/admin/orders/${o.id}`}
-                  className="flex justify-between items-center text-sm border-b border-white/5 last:border-0 pb-2 last:pb-0 hover:text-gold transition">
+                  className="flex justify-between items-center text-sm border-b border-white/5 last:border-0 pb-2 last:pb-0 hover:text-gold transition-colors duration-base ease-luxe">
                   <span>#{o.order_number}</span>
                   <span className="text-smoke text-xs">
                     {new Date(o.created_at).toLocaleDateString("he-IL")}

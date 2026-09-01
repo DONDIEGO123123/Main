@@ -68,7 +68,7 @@ export default function SupportPage() {
 
       {site.whatsapp && (
         <a href={site.whatsapp} target="_blank" rel="noopener noreferrer"
-          className="glass p-4 flex items-center gap-3 hover:border-gold/40 transition">
+          className="glass p-4 flex items-center gap-3 hover:border-gold/40 transition-colors duration-base ease-luxe">
           <span className="text-2xl">💬</span>
           <div className="flex-1">
             <p className="font-semibold text-sm">צריך תשובה מהירה?</p>

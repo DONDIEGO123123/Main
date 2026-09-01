@@ -117,8 +117,8 @@ export default function ProfileStats() {
               {formatPrice(metrics.spend)} / {formatPrice(nextMilestone.spend_target)}
             </span>
           </div>
-          <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-            <div className="h-full bg-gold transition-all duration-700"
+          <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
+            <div className="h-full bg-metal transition-all duration-slow ease-luxe"
               style={{ width: `${Math.min(100, (metrics.spend / nextMilestone.spend_target) * 100)}%` }} />
           </div>
         </section>
