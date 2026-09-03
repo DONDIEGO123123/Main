@@ -25,7 +25,24 @@ export async function saveAbandonedCart(items: CartItem[], total: number, phone?
       member_id: memberId ?? null,
       updated_at: new Date().toISOString(),
     }, { onConflict: "session_id" });
+
+    // a phone means the customer is deep in checkout — worth knowing about.
+    // The server decides whether to send; it only ever fires once per cart.
+    if (phone && phone.replace(/\D/g, "").length >= 9) {
+      alertOwner(session_id);
+    }
   } catch { /* never break the cart */ }
+}
+
+/** Fire-and-forget owner alert. Never blocks or breaks checkout. */
+function alertOwner(session_id: string) {
+  try {
+    fetch("/api/cart-alert", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id }),
+    }).catch(() => {});
+  } catch { /* ignore */ }
 }
 
 /** Mark the cart as converted once the order goes through. */

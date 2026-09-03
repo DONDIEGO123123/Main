@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-type Cfg = { enabled?: boolean; bot_token?: string; chat_id?: string };
+type Cfg = { enabled?: boolean; bot_token?: string; chat_id?: string; cart_alerts?: boolean };
 
 export default function AdminNotifications() {
   const [cfg, setCfg] = useState<Cfg>({});
@@ -48,6 +48,15 @@ export default function AdminNotifications() {
             cfg.enabled ? "bg-gold/15 text-gold border-gold/40" : "border-white/15 text-smoke"
           }`}>
           {cfg.enabled ? "✓ התראות פעילות" : "התראות כבויות"}
+        </button>
+
+        <button onClick={() => setCfg({ ...cfg, cart_alerts: cfg.cart_alerts === false })}
+          className={`w-full py-3 rounded-xl border transition ${
+            cfg.cart_alerts === false
+              ? "border-white/15 text-smoke"
+              : "bg-gold/15 text-gold border-gold/40"
+          }`}>
+          {cfg.cart_alerts === false ? "התראות עגלה נטושה כבויות" : "✓ התראה על עגלה נטושה"}
         </button>
 
         <div>
