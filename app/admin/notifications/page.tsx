@@ -6,6 +6,7 @@ type Cfg = { enabled?: boolean; bot_token?: string; chat_id?: string; cart_alert
 
 export default function AdminNotifications() {
   const [cfg, setCfg] = useState<Cfg>({});
+  const [testing, setTesting] = useState<string>("");
   const [loaded, setLoaded] = useState(false);
   const [saved, setSaved] = useState(false);
   const [testMsg, setTestMsg] = useState("");
@@ -49,6 +50,27 @@ export default function AdminNotifications() {
           }`}>
           {cfg.enabled ? "✓ התראות פעילות" : "התראות כבויות"}
         </button>
+
+        <button
+          onClick={async () => {
+            setTesting("שולח…");
+            try {
+              const r = await fetch("/api/cart-alert", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ test: true }),
+              });
+              const d = await r.json();
+              setTesting(d.ok ? "✓ נשלחה הודעת בדיקה לטלגרם" : `✕ ${d.reason ?? "נכשל"}`);
+            } catch {
+              setTesting("✕ הבקשה נכשלה");
+            }
+          }}
+          className="w-full py-3 rounded-xl border border-gold/40 text-gold"
+        >
+          שליחת הודעת בדיקה
+        </button>
+        {testing && <p className="text-sm text-smoke text-center">{testing}</p>}
 
         <button onClick={() => setCfg({ ...cfg, cart_alerts: cfg.cart_alerts === false })}
           className={`w-full py-3 rounded-xl border transition ${

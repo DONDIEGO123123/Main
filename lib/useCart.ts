@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import type { CartItem, Product } from "@/lib/types";
 import { track } from "@/lib/events";
+import { saveAbandonedCart } from "@/lib/abandoned";
 
 const KEY = "luxe-cart";
 const EVT = "luxe-cart-change";
@@ -26,6 +27,17 @@ export function useCart() {
     window.addEventListener("storage", sync);
     return () => { window.removeEventListener(EVT, sync); window.removeEventListener("storage", sync); };
   }, []);
+
+  // Persist the cart whenever it settles, so a customer who adds an item
+  // and leaves is recorded — not only those who reach checkout.
+  // Debounced, because a quantity stepper would otherwise write on every tap.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const total = items.reduce((n, i) => n + i.price * i.qty, 0);
+      saveAbandonedCart(items, total, undefined, undefined, "cart");
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [items]);
 
   const add = useCallback((p: Product, qty = 1) => {
     const items = read();

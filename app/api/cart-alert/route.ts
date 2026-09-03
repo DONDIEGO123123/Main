@@ -12,10 +12,36 @@ type Item = { name: string; qty: number; price: number };
  */
 export async function POST(req: Request) {
   try {
-    const { session_id } = await req.json();
-    if (!session_id) return NextResponse.json({ ok: false }, { status: 400 });
-
+    const { session_id, test } = await req.json();
     const supabase = await createClient();
+
+    // a test ping proves the telegram side works, independently of carts
+    if (test) {
+      const { data: row } = await supabase
+        .from("settings").select("value").eq("key", "notify").maybeSingle();
+      const c = (row?.value ?? {}) as { bot_token?: string; chat_id?: string; enabled?: boolean };
+
+      if (!c.enabled) return NextResponse.json({ ok: false, reason: "ההתראות כבויות בהגדרות" });
+      if (!c.bot_token) return NextResponse.json({ ok: false, reason: "חסר Bot Token" });
+      if (!c.chat_id) return NextResponse.json({ ok: false, reason: "חסר Chat ID" });
+
+      const r = await fetch(`https://api.telegram.org/bot${c.bot_token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: c.chat_id,
+          text: "🛒 <b>בדיקה</b>\n\nהתראות עגלה נטושה מחוברות ועובדות.",
+          parse_mode: "HTML",
+        }),
+      });
+      const body = await r.json().catch(() => ({}));
+      return NextResponse.json({
+        ok: r.ok,
+        reason: r.ok ? "נשלח" : (body?.description ?? "טלגרם דחה את הבקשה"),
+      });
+    }
+
+    if (!session_id) return NextResponse.json({ ok: false }, { status: 400 });
 
     const { data: cart } = await supabase
       .from("abandoned_carts")

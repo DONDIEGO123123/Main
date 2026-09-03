@@ -32,7 +32,7 @@ export default function CheckoutForm() {
   }, [member]);
 
   useEffect(() => {
-    saveAbandonedCart(items, subtotal, form.phone || undefined, member?.id);
+    saveAbandonedCart(items, subtotal, form.phone || undefined, member?.id, "checkout");
   }, [items, subtotal, form.phone, member?.id]);
 
   useEffect(() => {

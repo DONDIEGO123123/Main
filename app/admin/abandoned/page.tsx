@@ -5,6 +5,7 @@ import { formatPrice } from "@/lib/utils";
 import type { CartItem } from "@/lib/types";
 
 type Cart = {
+  stage?: string;
   id: string; session_id: string; phone: string | null;
   items: CartItem[]; total: number; recovered: boolean; updated_at: string;
 };
@@ -59,8 +60,15 @@ export default function AdminAbandoned() {
             <div key={c.id} className="glass p-4">
               <div className="flex items-start gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm">
+                  <p className="font-semibold text-sm flex items-center gap-2">
                     {c.phone ? <span dir="ltr">{c.phone}</span> : <span className="text-smoke">ללא טלפון</span>}
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] border ${
+                      c.stage === "checkout"
+                        ? "border-orange-400/40 bg-orange-500/15 text-orange-300"
+                        : "border-white/15 text-smoke"
+                    }`}>
+                      {c.stage === "checkout" ? "עזב בתשלום" : "עזב בעגלה"}
+                    </span>
                   </p>
                   <p className="text-smoke text-xs mt-0.5">
                     {new Date(c.updated_at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })}
