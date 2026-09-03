@@ -14,6 +14,8 @@ const nav = [
   { href: "/admin/banners", label: "באנרים", icon: "▭" },
   { href: "/admin/reviews", label: "ביקורות", icon: "★" },
   { href: "/admin/faq", label: "שאלות נפוצות", icon: "?" },
+  { href: "/admin/trust", label: "תגי אמון", icon: "🛡️" },
+  { href: "/admin/policies", label: "מדיניות ותנאים", icon: "📄" },
   { href: "/admin/delivery", label: "אזורי משלוח", icon: "➤" },
   { href: "/admin/control", label: "מה דורש טיפול", icon: "🚨" },
   { href: "/admin/live", label: "פעילות חיה", icon: "⚡" },

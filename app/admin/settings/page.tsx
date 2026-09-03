@@ -25,6 +25,10 @@ type Site = {
   gift_label?: string;
   watermark?: string;
   how_to_title?: string;
+  about_title?: string;
+  about_body?: string;
+  about_image?: string;
+  owner_name?: string;
   welcome_gift?: number;
   exit_code?: string;
   exit_label?: string;
@@ -106,6 +110,10 @@ export default function AdminSettings() {
         {input("name", "שם האתר", "LUXE")}
         {input("watermark", "סימן מים על תמונות (ריק = ללא)", "LUXE")}
         {input("how_to_title", "כותרת מדריך ההזמנה", "איך מזמינים?")}
+        {input("owner_name", "שם בעל החנות (מופיע בעמוד \"מי אנחנו\")", "")}
+        {input("about_title", "כותרת עמוד \"מי אנחנו\"", "")}
+        {input("about_image", "תמונה לעמוד \"מי אנחנו\" (קישור)", "")}
+        {input("about_body", "הסיפור שלכם — כמה משפטים אישיים", "")}
         {input("tagline", "סלוגן", "יוקרה. איכות. שירות.")}
         {input("telegram", "קישור טלגרם", "https://t.me/username")}
         {input("whatsapp", "קישור וואטסאפ", "https://wa.me/972501234567")}

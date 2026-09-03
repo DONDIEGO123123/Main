@@ -26,6 +26,8 @@ export default function Footer() {
         <div>
           <p className="font-semibold mb-4 text-white/90">מידע</p>
           <ul className="space-y-2 text-sm text-smoke">
+            <li><Link href="/about" className="transition-colors duration-base ease-luxe hover:text-gold">מי אנחנו</Link></li>
+            <li><Link href="/policies" className="transition-colors duration-base ease-luxe hover:text-gold">מדיניות ותנאים</Link></li>
             <li><Link href="/faq" className="transition-colors duration-base ease-luxe hover:text-gold">שאלות נפוצות</Link></li>
             <li><Link href="/reviews" className="transition-colors duration-base ease-luxe hover:text-gold">ביקורות לקוחות</Link></li>
             <li><Link href="/contact" className="transition-colors duration-base ease-luxe hover:text-gold">צור קשר</Link></li>

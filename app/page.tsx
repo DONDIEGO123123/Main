@@ -17,6 +17,7 @@ import VipClub from "@/components/VipClub";
 import JoinBanner from "@/components/JoinBanner";
 import HomeRails from "@/components/HomeRails";
 import HowToOrder from "@/components/HowToOrder";
+import TrustBadges from "@/components/TrustBadges";
 import CustomerGallery from "@/components/CustomerGallery";
 import HeroVideo from "@/components/HeroVideo";
 import RealStats from "@/components/RealStats";
@@ -106,6 +107,8 @@ export default async function HomePage() {
       )}
 
       <HeroVideo />
+
+      <TrustBadges />
 
       <HowToOrder />
 
