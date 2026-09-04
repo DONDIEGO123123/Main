@@ -34,7 +34,13 @@ export function useCart() {
   useEffect(() => {
     const t = setTimeout(() => {
       const total = items.reduce((n, i) => n + i.price * i.qty, 0);
-      saveAbandonedCart(items, total, undefined, undefined, "cart");
+      // a signed-in member is reachable even before checkout
+      let memberId: string | undefined;
+      try {
+        const raw = localStorage.getItem("luxe-member");
+        if (raw) memberId = JSON.parse(raw)?.id;
+      } catch { /* not signed in */ }
+      saveAbandonedCart(items, total, undefined, memberId, "cart");
     }, 1200);
     return () => clearTimeout(t);
   }, [items]);

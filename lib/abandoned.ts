@@ -54,8 +54,9 @@ export async function saveAbandonedCart(
       return { ok: false, error: error.message };
     }
 
-    // alert only once there's a way to reach the customer
-    if (phone && phone.replace(/\D/g, "").length >= 9) {
+    // Ask the server to alert. It decides whether there is a way to reach
+    // the customer — including looking up a logged-in member's phone.
+    if ((phone && phone.replace(/\D/g, "").length >= 9) || memberId) {
       alertOwner(session_id);
     }
 

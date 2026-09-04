@@ -27,6 +27,7 @@ type Site = {
   how_to_title?: string;
   about_title?: string;
   about_body?: string;
+  cart_message?: string;
   about_image?: string;
   owner_name?: string;
   welcome_gift?: number;
@@ -114,6 +115,7 @@ export default function AdminSettings() {
         {input("about_title", "כותרת עמוד \"מי אנחנו\"", "")}
         {input("about_image", "תמונה לעמוד \"מי אנחנו\" (קישור)", "")}
         {input("about_body", "הסיפור שלכם — כמה משפטים אישיים", "")}
+        {input("cart_message", "הודעת פנייה לעגלה נטושה (רשימת המוצרים נוספת אוטומטית)", "היי! ראינו שהשארת מוצרים בעגלה 🛍️")}
         {input("tagline", "סלוגן", "יוקרה. איכות. שירות.")}
         {input("telegram", "קישור טלגרם", "https://t.me/username")}
         {input("whatsapp", "קישור וואטסאפ", "https://wa.me/972501234567")}

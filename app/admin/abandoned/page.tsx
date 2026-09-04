@@ -6,6 +6,8 @@ import type { CartItem } from "@/lib/types";
 
 type Cart = {
   stage?: string;
+  alerted_at?: string | null;
+  member_id?: string | null;
   id: string; session_id: string; phone: string | null;
   items: CartItem[]; total: number; recovered: boolean; updated_at: string;
 };
@@ -13,6 +15,8 @@ type Cart = {
 export default function AdminAbandoned() {
   const [carts, setCarts] = useState<Cart[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState<string | null>(null);
+  const [result, setResult] = useState<Record<string, string>>({});
 
   useEffect(() => {
     createClient().from("abandoned_carts").select("*")
@@ -23,6 +27,29 @@ export default function AdminAbandoned() {
   const del = async (id: string) => {
     await createClient().from("abandoned_carts").delete().eq("id", id);
     setCarts(carts.filter((c) => c.id !== id));
+  };
+
+  const sendAlert = async (c: Cart) => {
+    setSending(c.id);
+    try {
+      // clear the stamp so a manual retry is always allowed
+      await createClient().from("abandoned_carts")
+        .update({ alerted_at: null }).eq("id", c.id);
+
+      const r = await fetch("/api/cart-alert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: c.session_id }),
+      });
+      const d = await r.json();
+      setResult((p) => ({
+        ...p,
+        [c.id]: d.ok ? "✓ נשלח לטלגרם" : `✕ ${d.reason ?? "נכשל"}`,
+      }));
+    } catch {
+      setResult((p) => ({ ...p, [c.id]: "✕ הבקשה נכשלה" }));
+    }
+    setSending(null);
   };
 
   if (loading) return <div className="skeleton h-64 rounded-2xl" />;
@@ -83,14 +110,39 @@ export default function AdminAbandoned() {
                   <p className="text-gold font-bold">{formatPrice(Number(c.total))}</p>
                 </div>
               </div>
-              <div className="flex gap-2 mt-3">
+              <div className="flex flex-wrap items-center gap-2 mt-3">
                 {c.phone && (
-                  <a href={`https://wa.me/${c.phone.replace(/\D/g, "").replace(/^0/, "972")}?text=${
-                    encodeURIComponent(`היי! ראינו שהשארת מוצרים בעגלה 🛍️\nרוצה שנשלים את ההזמנה?`)
-                  }`} target="_blank" rel="noopener noreferrer" className="btn-gold px-4 py-2 text-sm">
+                  <a
+                    href={`https://wa.me/${c.phone.replace(/\D/g, "").replace(/^0/, "972")}?text=${
+                      encodeURIComponent(
+                        `היי! ראינו שהשארת מוצרים בעגלה 🛍️\nרוצה שנשלים את ההזמנה?\n\n` +
+                        (c.items ?? []).map((i) => `• ${i.name} × ${i.qty}`).join("\n") +
+                        `\n\nסה״כ: ${formatPrice(Number(c.total))}`
+                      )
+                    }`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="btn-gold px-4 py-2 text-sm"
+                  >
                     פנייה בוואטסאפ
                   </a>
                 )}
+
+                <button
+                  onClick={() => sendAlert(c)}
+                  disabled={sending === c.id}
+                  className="btn-ghost px-4 py-2 text-sm disabled:opacity-50"
+                >
+                  {sending === c.id ? "שולח…" : "שלח לי לטלגרם"}
+                </button>
+
+                {result[c.id] && (
+                  <span className={`text-xs ${
+                    result[c.id].startsWith("✓") ? "text-emerald-400" : "text-red-400"
+                  }`}>
+                    {result[c.id]}
+                  </span>
+                )}
+
                 <button onClick={() => del(c.id)} className="mr-auto text-smoke text-sm hover:text-red-400">
                   הסרה
                 </button>

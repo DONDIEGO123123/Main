@@ -45,14 +45,22 @@ export async function POST(req: Request) {
 
     const { data: cart } = await supabase
       .from("abandoned_carts")
-      .select("id,phone,items,total,recovered,alerted_at")
+      .select("id,phone,member_id,stage,items,total,recovered,alerted_at")
       .eq("session_id", session_id)
       .maybeSingle();
 
-    // only alert on a real, un-alerted, un-recovered cart with a phone
-    if (!cart || !cart.phone || cart.recovered || cart.alerted_at) {
-      return NextResponse.json({ ok: false, reason: "skip" });
+    if (!cart) return NextResponse.json({ ok: false, reason: "cart not found" });
+    if (cart.recovered) return NextResponse.json({ ok: false, reason: "already ordered" });
+    if (cart.alerted_at) return NextResponse.json({ ok: false, reason: "already alerted" });
+
+    // a logged-in member has a phone on file even if they never reached checkout
+    let phone = cart.phone;
+    if (!phone && cart.member_id) {
+      const { data: m } = await supabase
+        .from("members").select("phone").eq("id", cart.member_id).maybeSingle();
+      phone = m?.phone ?? null;
     }
+    if (!phone) return NextResponse.json({ ok: false, reason: "no phone yet" });
 
     const { data: cfgRow } = await supabase
       .from("settings").select("value").eq("key", "notify").maybeSingle();
@@ -76,19 +84,36 @@ export async function POST(req: Request) {
     if (!claimed) return NextResponse.json({ ok: false, reason: "already alerted" });
 
     const items = (cart.items ?? []) as Item[];
-    const lines = items.map((i) => `• ${i.name} × ${i.qty}`).join("\n");
-    const money = new Intl.NumberFormat("he-IL", {
+    const money = (n: number) => new Intl.NumberFormat("he-IL", {
       style: "currency", currency: "ILS", maximumFractionDigits: 0,
-    }).format(Number(cart.total));
+    }).format(n);
 
-    const wa = `https://wa.me/${cart.phone.replace(/\D/g, "").replace(/^0/, "972")}`;
+    // --- the message the employee will send, built ready to go ---
+    const { data: siteRow } = await supabase
+      .from("settings").select("value").eq("key", "site").maybeSingle();
+    const site = (siteRow?.value ?? {}) as { cart_message?: string; name?: string };
+
+    const productLines = items.map((i) => `• ${i.name} × ${i.qty}`).join("\n");
+
+    const template = site.cart_message
+      || "היי! ראינו שהשארת מוצרים בעגלה 🛍️\nרוצה שנשלים את ההזמנה?";
+
+    const customerMsg =
+      `${template}\n\n${productLines}\n\nסה״כ: ${money(Number(cart.total))}`;
+
+    const digits = phone.replace(/\D/g, "").replace(/^0/, "972");
+    const wa = `https://wa.me/${digits}?text=${encodeURIComponent(customerMsg)}`;
+
+    // --- what the shop sees in Telegram ---
+    const stageLabel = cart.stage === "checkout" ? "עזב בעמוד התשלום" : "עזב בעגלה";
 
     const text =
       `🛒 <b>עגלה נטושה</b>\n\n` +
-      `📞 ${cart.phone}\n\n` +
-      `${lines}\n\n` +
-      `💰 ${money}\n\n` +
-      `<a href="${wa}">פנייה בוואטסאפ ←</a>`;
+      `📞 ${phone}\n` +
+      `📍 ${stageLabel}\n\n` +
+      `${productLines}\n\n` +
+      `💰 ${money(Number(cart.total))}\n\n` +
+      `<a href="${wa}">👉 פנייה ללקוח — ההודעה כבר מוכנה</a>`;
 
     const res = await fetch(`https://api.telegram.org/bot${cfg.bot_token}/sendMessage`, {
       method: "POST",
@@ -101,7 +126,16 @@ export async function POST(req: Request) {
       }),
     });
 
-    return NextResponse.json({ ok: res.ok });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      // release the claim so a later attempt can retry
+      await supabase.from("abandoned_carts")
+        .update({ alerted_at: null }).eq("id", cart.id);
+    }
+    return NextResponse.json({
+      ok: res.ok,
+      reason: res.ok ? "sent" : (body?.description ?? "telegram rejected"),
+    });
   } catch {
     return NextResponse.json({ ok: false }, { status: 500 });
   }
