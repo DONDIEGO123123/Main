@@ -80,7 +80,13 @@ export default function CheckoutForm() {
       channel: getChannel(),
     }).select("order_number").single();
 
-    if (error) { setErr("שמירת ההזמנה נכשלה. נסו שוב או צרו קשר בוואטסאפ."); setBusy(false); return; }
+    if (error) {
+      // surface the real cause — a generic message once hid a missing column
+      console.error("[checkout] order insert failed:", error);
+      setErr(`שמירת ההזמנה נכשלה: ${error.message}`);
+      setBusy(false);
+      return;
+    }
 
     const num = data?.order_number;
 
