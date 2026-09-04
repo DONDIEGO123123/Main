@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function CheckoutPage() {
   return (
     <main className="container mx-auto px-4 py-16 max-w-5xl">
-      <SectionTitle title="השלמת הזמנה" subtitle="עוד רגע קטן והמוצרים בדרך אליכם" />
+      <SectionTitle title="השלמת הזמנה" sub="עוד רגע קטן והמוצרים בדרך אליכם" />
       <div className="mt-10">
         <CheckoutForm />
       </div>

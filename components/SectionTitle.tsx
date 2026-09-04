@@ -10,19 +10,23 @@
 export default function SectionTitle({
   title,
   sub,
+  subtitle,
   align = "center",
 }: {
   eyebrow?: string;
   title: string;
+  /** `subtitle` is accepted as an alias so older callers keep working. */
   sub?: string;
+  subtitle?: string;
   align?: "center" | "start";
 }) {
   const centered = align === "center";
+  const text = sub ?? subtitle;
 
   return (
     <div className={`mb-12 max-w-2xl ${centered ? "text-center mx-auto" : "text-start"}`}>
       <h2 className="section-title">{title}</h2>
-      {sub && <p className="mt-4 text-smoke leading-relaxed">{sub}</p>}
+      {text && <p className="mt-4 text-smoke leading-relaxed">{text}</p>}
       <div
         className={`rule mt-6 w-24 ${centered ? "mx-auto" : ""}`}
         aria-hidden
