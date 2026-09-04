@@ -20,7 +20,7 @@ import type { DeliveryArea } from "@/lib/types";
 
 export default function CheckoutForm() {
   const router = useRouter();
-  const { items, subtotal, clear, count } = useCart();
+  const { items, subtotal, clear, count, setQty, remove } = useCart();
   const site = useSiteSettings();
   const { t } = useLang();
   const { member, refresh } = useMember();
@@ -31,8 +31,19 @@ export default function CheckoutForm() {
     if (member) setForm((f) => ({ ...f, name: f.name || member.display_name, phone: f.phone || member.phone }));
   }, [member]);
 
+  // A phone typed here is our only way to follow up if the customer stops.
+  // Debounced so we save once they pause, not on every keystroke.
   useEffect(() => {
-    saveAbandonedCart(items, subtotal, form.phone || undefined, member?.id, "checkout");
+    const digits = form.phone.replace(/\D/g, "");
+    const t = setTimeout(() => {
+      saveAbandonedCart(
+        items, subtotal,
+        digits.length >= 9 ? form.phone : undefined,
+        member?.id,
+        "checkout"
+      );
+    }, 900);
+    return () => clearTimeout(t);
   }, [items, subtotal, form.phone, member?.id]);
 
   useEffect(() => {
@@ -154,18 +165,31 @@ export default function CheckoutForm() {
 
   return (
     <div className="grid lg:grid-cols-5 gap-6">
-      <div className="lg:col-span-3 glass p-6 space-y-4">
-        <h2 className="font-semibold text-lg">פרטי המזמין</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm text-smoke block mb-1">{t("fullName")}</label>
-            <input className="input" value={form.name} onChange={(e) => set("name", e.target.value)} />
-          </div>
-          <div>
-            <label className="text-sm text-smoke block mb-1">{t("phone")}</label>
-            <input className="input" dir="ltr" inputMode="tel" value={form.phone}
-              onChange={(e) => set("phone", e.target.value)} />
-          </div>
+      <div className="lg:col-span-3 glass p-6 space-y-5">
+        {/* Phone leads: it is how we reach the customer if they stop here */}
+        <div>
+          <label className="font-semibold text-lg block mb-1">{t("phone")}</label>
+          <p className="text-smoke text-sm mb-3">
+            נשתמש בו כדי לאשר את ההזמנה ולעדכן על המשלוח
+          </p>
+          <input
+            className="input text-lg py-4"
+            dir="ltr"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="050-0000000"
+            value={form.phone}
+            onChange={(e) => set("phone", e.target.value)}
+          />
+        </div>
+
+        <div className="rule" aria-hidden />
+
+        <h2 className="font-semibold text-lg">פרטי המשלוח</h2>
+        <div>
+          <label className="text-sm text-smoke block mb-1">{t("fullName")}</label>
+          <input className="input" autoComplete="name" value={form.name}
+            onChange={(e) => set("name", e.target.value)} />
         </div>
         <div>
           <label className="text-sm text-smoke block mb-1">{t("region")}</label>
@@ -196,14 +220,53 @@ export default function CheckoutForm() {
 
       <div className="lg:col-span-2 glass-gold p-6 h-fit space-y-4 lg:sticky lg:top-24">
         <h2 className="font-semibold text-lg">{t("orderSummary")}</h2>
-        <div className="space-y-2 max-h-64 overflow-y-auto">
+        <div className="space-y-3 max-h-72 overflow-y-auto">
           {items.map((i) => (
-            <div key={i.product_id} className="flex justify-between text-sm gap-2">
-              <span className="truncate text-smoke">{i.name} × {i.qty}</span>
-              <span className="shrink-0">{formatPrice(i.price * i.qty)}</span>
+            <div key={i.product_id} className="flex items-center gap-2 text-sm">
+              <div className="flex-1 min-w-0">
+                <p className="truncate">{i.name}</p>
+                <p className="text-smoke text-xs">{formatPrice(i.price)} ליחידה</p>
+              </div>
+
+              {/* quantities are editable here — no need to go back to the cart */}
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  onClick={() => setQty(i.product_id, i.qty - 1)}
+                  aria-label="הפחתת כמות"
+                  className="h-7 w-7 rounded-full border border-white/15 text-smoke
+                             transition-colors duration-base ease-luxe hover:border-gold/50 hover:text-gold"
+                >
+                  −
+                </button>
+                <span className="w-6 text-center tabular-nums">{i.qty}</span>
+                <button
+                  onClick={() => setQty(i.product_id, i.qty + 1)}
+                  aria-label="הוספת כמות"
+                  className="h-7 w-7 rounded-full border border-white/15 text-smoke
+                             transition-colors duration-base ease-luxe hover:border-gold/50 hover:text-gold"
+                >
+                  +
+                </button>
+              </div>
+
+              <span className="shrink-0 w-16 text-left tabular-nums">
+                {formatPrice(i.price * i.qty)}
+              </span>
+
+              <button
+                onClick={() => remove(i.product_id)}
+                aria-label={`הסרת ${i.name}`}
+                className="text-smoke text-lg leading-none shrink-0 transition-colors hover:text-red-400"
+              >
+                ×
+              </button>
             </div>
           ))}
         </div>
+
+        <Link href="/products" className="btn-ghost block text-center py-2 text-sm">
+          הוספת מוצרים נוספים
+        </Link>
         <CheckoutUpsell />
 
         <div className="border-t border-white/10 pt-4">
