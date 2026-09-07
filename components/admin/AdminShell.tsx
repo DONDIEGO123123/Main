@@ -27,6 +27,7 @@ const nav = [
   { href: "/admin/notifications", label: "התראות טלגרם", icon: "🔔" },
   { href: "/admin/profit", label: "רווחיות ומלאי", icon: "💰" },
   { href: "/admin/abandoned", label: "עגלות נטושות", icon: "🛒" },
+  { href: "/admin/cart-blast", label: "פנייה לעגלות", icon: "📣" },
   { href: "/admin/qr", label: "קוד QR", icon: "📲" },
   { href: "/admin/sheet", label: "סנכרון לגיליון", icon: "📗" },
   { href: "/admin/backup", label: "גיבוי נתונים", icon: "💾" },

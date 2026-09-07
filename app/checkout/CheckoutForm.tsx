@@ -26,9 +26,16 @@ export default function CheckoutForm() {
   const { member, refresh } = useMember();
   const [areas, setAreas] = useState<DeliveryArea[]>([]);
   const [form, setForm] = useState({ name: "", phone: "", address: "", city: "", region: "", notes: "" });
+  // Two steps: phone first, then everything else. Capturing the phone before
+  // the longer form means we can follow up even if the customer stops there.
+  const [step, setStep] = useState<1 | 2>(1);
+  const [phoneErr, setPhoneErr] = useState("");
 
   useEffect(() => {
-    if (member) setForm((f) => ({ ...f, name: f.name || member.display_name, phone: f.phone || member.phone }));
+    if (!member) return;
+    setForm((f) => ({ ...f, name: f.name || member.display_name, phone: f.phone || member.phone }));
+    // a signed-in member already gave us their number — don't ask twice
+    setStep(2);
   }, [member]);
 
   // A phone typed here is our only way to follow up if the customer stops.
@@ -163,27 +170,75 @@ export default function CheckoutForm() {
     );
   }
 
-  return (
-    <div className="grid lg:grid-cols-5 gap-6">
-      <div className="lg:col-span-3 glass p-6 space-y-5">
-        {/* Phone leads: it is how we reach the customer if they stop here */}
-        <div>
-          <label className="font-semibold text-lg block mb-1">{t("phone")}</label>
-          <p className="text-smoke text-sm mb-3">
-            נשתמש בו כדי לאשר את ההזמנה ולעדכן על המשלוח
-          </p>
+  // ---- Step 1: phone only -------------------------------------------
+  if (step === 1) {
+    const goNext = () => {
+      const digits = form.phone.replace(/\D/g, "");
+      if (digits.length < 9) { setPhoneErr("נא להזין מספר טלפון תקין"); return; }
+      setPhoneErr("");
+      setStep(2);
+    };
+
+    return (
+      <div className="max-w-md mx-auto">
+        <div className="glass p-8">
+          <div className="text-center mb-7">
+            <p className="text-4xl mb-3" aria-hidden>📱</p>
+            <h2 className="font-display text-2xl font-bold">מה מספר הטלפון שלך?</h2>
+            <p className="text-smoke text-sm mt-3 leading-relaxed">
+              נשתמש בו כדי לאשר את ההזמנה ולעדכן אותך על המשלוח
+            </p>
+          </div>
+
           <input
-            className="input text-lg py-4"
+            className="input text-center text-xl py-4 tracking-wider"
             dir="ltr"
             inputMode="tel"
             autoComplete="tel"
+            autoFocus
             placeholder="050-0000000"
             value={form.phone}
-            onChange={(e) => set("phone", e.target.value)}
+            onChange={(e) => { set("phone", e.target.value); setPhoneErr(""); }}
+            onKeyDown={(e) => { if (e.key === "Enter") goNext(); }}
+            aria-invalid={!!phoneErr}
           />
+
+          {phoneErr && <p className="text-red-400 text-sm mt-2 text-center">{phoneErr}</p>}
+
+          <button onClick={goNext} className="btn-gold w-full mt-6 py-3.5">
+            המשך ←
+          </button>
+
+          <p className="text-smoke text-xs text-center mt-5">
+            {count} מוצרים בעגלה · {formatPrice(subtotal)}
+          </p>
         </div>
 
-        <div className="rule" aria-hidden />
+        <Link href="/products" className="btn-ghost block text-center py-3 mt-4">
+          חזרה לקטלוג
+        </Link>
+      </div>
+    );
+  }
+
+  // ---- Step 2: everything else --------------------------------------
+  return (
+    <div className="grid lg:grid-cols-5 gap-6">
+      <div className="lg:col-span-3 glass p-6 space-y-5">
+        {/* the number from step 1, editable without going back */}
+        <div className="flex items-center gap-3 pb-4 border-b border-white/[0.08]">
+          <span className="text-xl" aria-hidden>📱</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-smoke text-xs">טלפון</p>
+            <p className="font-semibold" dir="ltr">{form.phone}</p>
+          </div>
+          <button
+            onClick={() => setStep(1)}
+            className="text-gold text-sm transition-colors hover:text-gold-soft"
+          >
+            שינוי
+          </button>
+        </div>
 
         <h2 className="font-semibold text-lg">פרטי המשלוח</h2>
         <div>
