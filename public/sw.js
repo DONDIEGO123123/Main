@@ -28,3 +28,42 @@ self.addEventListener("fetch", (e) => {
       .catch(() => caches.match(req).then((r) => r || caches.match("/")))
   );
 });
+
+
+// ---- Push notifications ------------------------------------------
+// The payload is sent encrypted from the server; we only render it.
+self.addEventListener("push", (e) => {
+  let data = {};
+  try { data = e.data ? e.data.json() : {}; } catch { /* malformed payload */ }
+
+  const title = data.title || "LUXE";
+  const options = {
+    body: data.body || "",
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
+    dir: "rtl",
+    lang: "he",
+    // same tag replaces an earlier notification instead of stacking
+    tag: data.tag || "luxe-general",
+    renotify: true,
+    data: { link: data.link || "/" },
+  };
+
+  e.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Tapping the notification focuses an open tab, or opens a new one.
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const link = (e.notification.data && e.notification.data.link) || "/";
+
+  e.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true })
+      .then((list) => {
+        for (const c of list) {
+          if ("focus" in c) { c.navigate(link); return c.focus(); }
+        }
+        if (self.clients.openWindow) return self.clients.openWindow(link);
+      })
+  );
+});

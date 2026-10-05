@@ -24,6 +24,7 @@ const nav = [
   { href: "/admin/stuck", label: "מוצרים תקועים", icon: "🐌" },
   { href: "/admin/messages", label: "הודעות ללקוח", icon: "📤" },
   { href: "/admin/reviews-request", label: "בקשת ביקורת", icon: "⭐" },
+  { href: "/admin/push", label: "התראות לטלפון", icon: "🔔" },
   { href: "/admin/notifications", label: "התראות טלגרם", icon: "🔔" },
   { href: "/admin/profit", label: "רווחיות ומלאי", icon: "💰" },
   { href: "/admin/abandoned", label: "עגלות נטושות", icon: "🛒" },
