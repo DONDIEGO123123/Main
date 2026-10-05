@@ -11,12 +11,17 @@ type Campaign = {
 };
 
 type Product = { id: string; name: string; created_at: string };
+type Promo = {
+  id: string; title: string; subtitle: string | null;
+  cta_url: string | null; created_at: string;
+};
 
 /** Compose and broadcast a push notification to every registered device. */
 export default function AdminPush() {
   const [devices, setDevices] = useState(0);
   const [history, setHistory] = useState<Campaign[]>([]);
   const [recent, setRecent] = useState<Product[]>([]);
+  const [promos, setPromos] = useState<Promo[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [title, setTitle] = useState("");
@@ -27,15 +32,18 @@ export default function AdminPush() {
 
   const load = async () => {
     const s = createClient();
-    const [d, h, p] = await Promise.all([
+    const [d, h, p, pr] = await Promise.all([
       s.from("push_subscriptions").select("id", { count: "exact", head: true }).lt("failed_count", 5),
       s.from("push_campaigns").select("*").order("created_at", { ascending: false }).limit(10),
       s.from("products").select("id,name,created_at").eq("is_active", true)
         .order("created_at", { ascending: false }).limit(5),
+      s.from("promotions").select("id,title,subtitle,cta_url,created_at")
+        .eq("is_active", true).order("created_at", { ascending: false }).limit(5),
     ]);
     setDevices(d.count ?? 0);
     setHistory((h.data as Campaign[]) ?? []);
     setRecent((p.data as Product[]) ?? []);
+    setPromos((pr.data as Promo[]) ?? []);
     setLoading(false);
   };
 
@@ -66,6 +74,13 @@ export default function AdminPush() {
     setBusy(false);
   };
 
+  /** One tap to announce a live promotion. */
+  const fillFromPromo = (p: Promo) => {
+    setTitle(p.title);
+    setBody(p.subtitle || "מבצע חדש בחנות");
+    setLink(p.cta_url || "/promotions");
+  };
+
   /** One tap to announce the newest product. */
   const fillFromProduct = (p: Product) => {
     setTitle("מוצר חדש בחנות ✨");
@@ -83,6 +98,29 @@ export default function AdminPush() {
         <p className="font-display text-3xl font-black gold-text tabular-nums">{devices}</p>
         <p className="text-smoke text-sm mt-1">מכשירים רשומים</p>
       </div>
+
+      {/* promotions first — they are the ones worth interrupting someone for */}
+      {promos.length > 0 && (
+        <section className="glass p-5">
+          <h2 className="font-semibold mb-3">הכרזה על מבצע</h2>
+          <div className="space-y-2">
+            {promos.map((p) => (
+              <button key={p.id} onClick={() => fillFromPromo(p)}
+                className="w-full flex items-center gap-3 text-right p-3 rounded-xl
+                           transition-colors duration-base ease-luxe hover:bg-white/[0.04]">
+                <span className="text-lg shrink-0" aria-hidden>🔥</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm truncate">{p.title}</p>
+                  {p.subtitle && (
+                    <p className="text-smoke text-xs truncate">{p.subtitle}</p>
+                  )}
+                </div>
+                <span className="text-gold text-sm shrink-0">מילוי ←</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* one tap to announce something new */}
       {recent.length > 0 && (

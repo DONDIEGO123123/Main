@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useSiteSettings } from "@/lib/site";
+import { useInstall } from "@/lib/install";
 
 const KEY = "luxe-welcomed";
 
@@ -21,8 +22,10 @@ export default function WelcomeGate() {
     welcome_enabled?: boolean;
   };
   const reduced = useReducedMotion();
+  const { mode, install, canInstall } = useInstall();
   const [show, setShow] = useState(false);
   const [ready, setReady] = useState(false);
+  const [iosHelp, setIosHelp] = useState(false);
 
   useEffect(() => {
     // decide on the client only, so the page itself renders normally
@@ -88,15 +91,39 @@ export default function WelcomeGate() {
               {site.welcome_sub || "קולקציית פרימיום נבחרת, משלוח מהיר ושירות אישי."}
             </p>
 
-            <motion.button
-              onClick={enter}
-              className="btn-gold mt-10 px-12 py-3.5 text-base"
+            <motion.div
+              className="mt-10 flex flex-col items-center gap-4"
               initial={reduced ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              {site.welcome_cta || "כניסה"}
-            </motion.button>
+              <button onClick={enter} className="btn-gold px-12 py-3.5 text-base">
+                {site.welcome_cta || "כניסה"}
+              </button>
+
+              {/* installing here is the one moment it feels natural to offer */}
+              {canInstall && (
+                <button
+                  onClick={async () => {
+                    if (mode === "ios") { setIosHelp(true); return; }
+                    await install();
+                  }}
+                  className="text-smoke text-sm transition-colors duration-base ease-luxe hover:text-gold"
+                >
+                  📱 התקנה כאפליקציה
+                </button>
+              )}
+            </motion.div>
+
+            {iosHelp && (
+              <div className="mt-6 glass-thin p-5 text-right max-w-xs mx-auto">
+                <p className="text-sm font-semibold mb-3 text-center">הוספה למסך הבית</p>
+                <ol className="space-y-2.5 text-smoke text-xs leading-relaxed">
+                  <li>1. לחצו על כפתור השיתוף בתחתית המסך</li>
+                  <li>2. בחרו &laquo;הוספה למסך הבית&raquo;</li>
+                </ol>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}

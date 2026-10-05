@@ -5,6 +5,7 @@ import { useMember } from "@/lib/member";
 import {
   pushState, subscribeToPush, isSubscribed, type PushState,
 } from "@/lib/push";
+import { claimSlot, releaseSlot, onSlotFree } from "@/lib/prompt-slot";
 
 const DISMISS_KEY = "luxe-push-dismissed";
 const DELAY_MS = 25_000;   // let someone actually look around first
@@ -33,8 +34,18 @@ export default function PushPrompt() {
         if (localStorage.getItem(DISMISS_KEY)) return;
       } catch { return; }
 
+      const reveal = () => {
+        if (cancelled || !claimSlot("push")) return false;
+        setState(s);
+        setShow(true);
+        return true;
+      };
+
+      // if the install bar is still up, wait for it to clear
       const t = setTimeout(() => {
-        if (!cancelled) { setState(s); setShow(true); }
+        if (!reveal()) {
+          const off = onSlotFree(() => { if (reveal()) off(); });
+        }
       }, DELAY_MS);
 
       return () => clearTimeout(t);
@@ -46,6 +57,7 @@ export default function PushPrompt() {
   const dismiss = () => {
     try { localStorage.setItem(DISMISS_KEY, "1"); } catch { /* ignore */ }
     setShow(false);
+    releaseSlot("push");
   };
 
   const accept = async () => {
