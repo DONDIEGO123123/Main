@@ -15,6 +15,18 @@ const DISMISS_KEY = "luxe-install-dismissed";
  * Share → Add to Home Screen instructions instead, which matters because
  * push notifications on iOS only work once the site is installed.
  */
+
+/** The gift offer covers install and notifications, so it goes first. */
+function giftPending(): boolean {
+  try {
+    if (localStorage.getItem("luxe-gift-code")) return false;      // already claimed
+    if (localStorage.getItem("luxe-gift-dismissed")) return false; // declined
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export default function InstallPrompt() {
   const { mode, install, canInstall } = useInstall();
   const site = useSiteSettings() as { name?: string };
@@ -30,6 +42,7 @@ export default function InstallPrompt() {
 
   useEffect(() => {
     if (!canInstall) return;
+    if (giftPending()) return;   // the gift offer is the better ask
     try {
       if (localStorage.getItem(DISMISS_KEY)) return;
     } catch { return; }

@@ -31,6 +31,9 @@ type Site = {
   welcome_title?: string;
   welcome_sub?: string;
   welcome_cta?: string;
+  app_gift_enabled?: boolean;
+  app_gift_amount?: number;
+  app_gift_min?: number;
   about_image?: string;
   owner_name?: string;
   welcome_gift?: number;
@@ -122,6 +125,8 @@ export default function AdminSettings() {
         {input("welcome_title", "מסך פתיחה — כותרת", "ברוכים הבאים")}
         {input("welcome_sub", "מסך פתיחה — משפט משנה", "")}
         {input("welcome_cta", "מסך פתיחה — טקסט הכפתור", "כניסה")}
+        {input("app_gift_amount", "מתנת התקנה — סכום בשקלים", "50")}
+        {input("app_gift_min", "מתנת התקנה — מינימום הזמנה", "200")}
         {input("tagline", "סלוגן", "יוקרה. איכות. שירות.")}
         {input("telegram", "קישור טלגרם", "https://t.me/username")}
         {input("whatsapp", "קישור וואטסאפ", "https://wa.me/972501234567")}

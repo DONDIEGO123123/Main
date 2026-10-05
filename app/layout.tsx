@@ -15,6 +15,7 @@ import ExitOffer from "@/components/ExitOffer";
 import CompareBar from "@/components/CompareBar";
 import WelcomeGate from "@/components/WelcomeGate";
 import PushPrompt from "@/components/PushPrompt";
+import AppGift from "@/components/AppGift";
 import MaintenanceGate from "@/components/MaintenanceGate";
 import ReferralCapture from "@/components/ReferralCapture";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -87,6 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ExitOffer />
         <CompareBar />
         <WelcomeGate />
+        <AppGift />
         <PushPrompt />
         <ReferralCapture />
         {gaId && (

@@ -15,6 +15,18 @@ const DELAY_MS = 25_000;   // let someone actually look around first
  * spent a little time on the site. An immediate prompt gets denied, and
  * a denial is permanent: only the person can undo it in browser settings.
  */
+
+/** The gift offer covers install and notifications, so it goes first. */
+function giftPending(): boolean {
+  try {
+    if (localStorage.getItem("luxe-gift-code")) return false;      // already claimed
+    if (localStorage.getItem("luxe-gift-dismissed")) return false; // declined
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export default function PushPrompt() {
   const { member } = useMember();
   const [show, setShow] = useState(false);
@@ -26,6 +38,7 @@ export default function PushPrompt() {
     let cancelled = false;
 
     (async () => {
+      if (giftPending()) return;   // the gift offer asks for this already
       const s = pushState();
       if (s === "denied" || s === "unsupported") return;
       if (await isSubscribed()) return;
