@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMember } from "@/lib/member";
 import {
-  pushState, subscribeToPush, isSubscribed, type PushState,
+  pushState, subscribeToPush, isSubscribed, syncDeviceLink, type PushState,
 } from "@/lib/push";
 import { claimSlot, releaseSlot, onSlotFree } from "@/lib/prompt-slot";
 
@@ -33,6 +33,9 @@ export default function PushPrompt() {
   const [state, setState] = useState<PushState>("unsupported");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+
+  // keep an existing device linked to this browser's cart and member
+  useEffect(() => { syncDeviceLink(member?.id); }, [member?.id]);
 
   useEffect(() => {
     let cancelled = false;

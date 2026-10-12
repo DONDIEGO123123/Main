@@ -36,6 +36,17 @@ export default function CartBlast() {
   const [includeItems, setIncludeItems] = useState(true);
   const [filter, setFilter] = useState<"pending" | "all">("pending");
   const [busy, setBusy] = useState<string | null>(null);
+  // per-row outcome, keyed by cart id
+  const [result, setResult] = useState<Record<string, string>>({});
+
+  // push to abandoned carts — reaches anyone who allowed notifications,
+  // including carts abandoned before notifications existed
+  const [reachable, setReachable] = useState(0);
+  const [pushTitle, setPushTitle] = useState("השארת מוצרים בעגלה 🛍️");
+  const [pushBody, setPushBody] = useState("");
+  const [cooldown, setCooldown] = useState(3);
+  const [pushResult, setPushResult] = useState("");
+  const [pushBusy, setPushBusy] = useState(false);
 
   const load = async () => {
     const { data } = await createClient()
@@ -60,6 +71,12 @@ export default function CartBlast() {
     }
 
     setCarts(rows);
+
+    // how many open carts have a device we can actually reach
+    const { data: t } = await createClient()
+      .from("cart_push_targets").select("cart_id").limit(3000);
+    setReachable(new Set(((t ?? []) as { cart_id: string }[]).map((x) => x.cart_id)).size);
+
     setLoading(false);
   };
 
@@ -105,6 +122,51 @@ export default function CartBlast() {
     markContacted(c);
   };
 
+  const sendPush = async (test = false) => {
+    if (!test && !confirm(`לשלוח התראה לכל בעלי העגלות הפתוחות?`)) return;
+    setPushBusy(true);
+    setPushResult("");
+    try {
+      const r = await fetch("/api/push/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: pushTitle, body: pushBody,
+          cooldownDays: test ? 0 : cooldown, test,
+        }),
+      });
+      const d = await r.json();
+      setPushResult(
+        d.ok ? `✓ נשלח ל-${d.sent} מכשירים` : `✕ ${d.reason ?? "השליחה נכשלה"}`
+      );
+    } catch {
+      setPushResult("✕ הבקשה נכשלה");
+    }
+    setPushBusy(false);
+  };
+
+  /** Nudge one specific cart owner, if their device is linked. */
+  const pushOne = async (c: Cart) => {
+    setBusy(c.id);
+    try {
+      const r = await fetch("/api/push/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cartId: c.id, title: pushTitle, body: pushBody, cooldownDays: 0,
+        }),
+      });
+      const d = await r.json();
+      setResult((p) => ({
+        ...p,
+        [c.id]: d.ok ? "✓ התראה נשלחה" : `✕ ${d.reason ?? "נכשל"}`,
+      }));
+    } catch {
+      setResult((p) => ({ ...p, [c.id]: "✕ הבקשה נכשלה" }));
+    }
+    setBusy(null);
+  };
+
   const resetAll = async () => {
     if (!confirm("לאפס את הסימון על כל העגלות?")) return;
     await createClient().from("abandoned_carts")
@@ -128,6 +190,70 @@ export default function CartBlast() {
           <p className="text-smoke text-sm mt-1">ממתינות לפנייה</p>
         </div>
       </div>
+
+      {/* push: reaches carts the phone list cannot, including old ones */}
+      <section className="glass p-5 space-y-4">
+        <div className="flex items-start gap-3">
+          <span className="text-2xl shrink-0" aria-hidden>🔔</span>
+          <div className="flex-1 min-w-0">
+            <h2 className="font-semibold">התראה לטלפון</h2>
+            <p className="text-smoke text-sm mt-1 leading-relaxed">
+              נשלחת בבת אחת לכל מי שאישר התראות ויש לו עגלה פתוחה —
+              כולל עגלות שננטשו בעבר, וגם כאלה שאין להן טלפון
+              ולכן אינן מופיעות ברשימה למטה.
+            </p>
+          </div>
+          <div className="text-center shrink-0">
+            <p className="font-display text-2xl font-black gold-text tabular-nums">
+              {reachable}
+            </p>
+            <p className="text-smoke text-[11px]">ניתנות להתראה</p>
+          </div>
+        </div>
+
+        <div>
+          <label className="text-sm text-smoke block mb-1">כותרת</label>
+          <input className="input" maxLength={60} value={pushTitle}
+            onChange={(e) => setPushTitle(e.target.value)} />
+        </div>
+
+        <div>
+          <label className="text-sm text-smoke block mb-1">
+            תוכן (ריק = המוצרים והסכום של כל לקוח)
+          </label>
+          <input className="input" maxLength={120} value={pushBody}
+            onChange={(e) => setPushBody(e.target.value)}
+            placeholder="המוצרים שלך עדיין מחכים" />
+        </div>
+
+        <div>
+          <label className="text-sm text-smoke block mb-1">
+            לא לשלוח שוב למי שקיבל ב-{cooldown} הימים האחרונים
+          </label>
+          <input type="range" min={0} max={14} value={cooldown}
+            onChange={(e) => setCooldown(Number(e.target.value))}
+            className="w-full accent-gold" />
+        </div>
+
+        {pushResult && (
+          <p className={`text-sm ${
+            pushResult.startsWith("✓") ? "text-emerald-400" : "text-red-400"
+          }`}>
+            {pushResult}
+          </p>
+        )}
+
+        <div className="flex gap-2">
+          <button onClick={() => sendPush(true)} disabled={pushBusy}
+            className="btn-ghost flex-1 py-3 text-sm disabled:opacity-50">
+            בדיקה למכשיר אחד
+          </button>
+          <button onClick={() => sendPush(false)} disabled={pushBusy || reachable === 0}
+            className="btn-gold flex-1 py-3 disabled:opacity-40">
+            {pushBusy ? "שולח…" : "שליחה לכולם"}
+          </button>
+        </div>
+      </section>
 
       {/* the message, written once */}
       <section className="glass p-5 space-y-4">
@@ -214,6 +340,27 @@ export default function CartBlast() {
               <span className="text-gold font-bold shrink-0 tabular-nums">
                 {formatPrice(Number(c.total))}
               </span>
+
+              {result[c.id] && (
+                <span className={`text-xs shrink-0 ${
+                  result[c.id].startsWith("✓") ? "text-emerald-400" : "text-red-400"
+                }`}>
+                  {result[c.id]}
+                </span>
+              )}
+
+              {/* notification first — it costs nothing and needs no reply */}
+              <button
+                onClick={() => pushOne(c)}
+                disabled={busy === c.id}
+                title="התראה לטלפון"
+                aria-label="שליחת התראה לטלפון"
+                className="h-9 w-9 grid place-items-center rounded-full border border-white/15
+                           text-smoke shrink-0 transition-colors duration-base ease-luxe
+                           hover:border-gold/50 hover:text-gold disabled:opacity-40"
+              >
+                🔔
+              </button>
 
               <button
                 onClick={() => openAndMark(c)}

@@ -42,6 +42,11 @@ export function pushState(): PushState {
   return "available";
 }
 
+/** The cart id already in this browser — it links a device to its own cart. */
+function cartSid(): string | null {
+  try { return localStorage.getItem("luxe-cart-sid"); } catch { return null; }
+}
+
 /** Ask permission and register the device. Returns true once stored. */
 export async function subscribeToPush(memberId?: string): Promise<boolean> {
   try {
@@ -70,6 +75,9 @@ export async function subscribeToPush(memberId?: string): Promise<boolean> {
         p256dh: json.keys.p256dh,
         auth: json.keys.auth,
         member_id: memberId ?? null,
+        // storing this makes carts abandoned earlier in this browser
+        // reachable too, not just ones created from now on
+        cart_sid: cartSid(),
         user_agent: navigator.userAgent.slice(0, 200),
         failed_count: 0,
       },
@@ -105,5 +113,34 @@ export async function isSubscribed(): Promise<boolean> {
     return !!(await reg.pushManager.getSubscription());
   } catch {
     return false;
+  }
+}
+
+/**
+ * Keeps an already-registered device linked to its cart and member.
+ *
+ * Devices that subscribed before the cart link existed have no cart_sid,
+ * so without this they could never be reached about an abandoned cart.
+ * Cheap enough to run on every load.
+ */
+export async function syncDeviceLink(memberId?: string): Promise<void> {
+  try {
+    if (!("serviceWorker" in navigator)) return;
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (!sub) return;
+
+    let sid: string | null = null;
+    try { sid = localStorage.getItem("luxe-cart-sid"); } catch { /* ignore */ }
+    if (!sid && !memberId) return;
+
+    const patch: Record<string, string> = {};
+    if (sid) patch.cart_sid = sid;
+    if (memberId) patch.member_id = memberId;
+
+    await createClient().from("push_subscriptions")
+      .update(patch).eq("endpoint", sub.endpoint);
+  } catch {
+    /* linking is best-effort */
   }
 }
