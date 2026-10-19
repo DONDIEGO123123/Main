@@ -39,7 +39,6 @@ export default function AdminProducts() {
           { value: "platinum", label: "Platinum ומעלה" },
           { value: "vip", label: "VIP בלבד" },
         ] },
-        { key: "early_access_until", label: "גישה מוקדמת ל-VIP עד (תאריך)", type: "text" },
         { key: "is_active", label: "פעיל", type: "boolean" },
       ]}
     />
